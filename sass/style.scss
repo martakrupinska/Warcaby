@@ -1,0 +1,72 @@
+$width: 30px;
+$height: 30px;
+
+$width-min-circle: 12px; //calc(calc($width - 6px) / 2);
+$height-min-circle: 12px; //calc(calc($height - 6px) / 2);
+@mixin bgc-color($color) {
+	background-color: beige;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: #34495e;
+	background-color: #e1edc1; // #ecf0f1;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 15px;
+	margin: 0 20px;
+
+	.board {
+		&__dscrpt {
+			text-align: center;
+			font-size: 10px;
+		}
+		&__square {
+			width: $width;
+			height: $height;
+			//border: 1px solid black;
+			padding: 1px;
+
+			.disc {
+				position: relative;
+				border-radius: 50%;
+				width: calc($width - 2px);
+				height: calc($height - 2px);
+				text-align: center;
+				cursor: pointer;
+			}
+			.disc--white {
+				background-color: white;
+			}
+			.disc--black {
+				background-color: black;
+			}
+			.disc::after {
+				content: '';
+				position: absolute;
+				top: calc(calc(100% - $height-min-circle) / 2);
+				left: calc(calc(100% - $width-min-circle) / 2);
+				border-radius: 50%;
+				width: $width-min-circle;
+				height: $height-min-circle;
+				box-shadow: 0px 0px 2px 1px grey;
+			}
+		}
+
+		&__square--light {
+			background-color: beige;
+		}
+		&__square--dark {
+			background-color: brown;
+		}
+	}
+}
