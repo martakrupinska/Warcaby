@@ -63,6 +63,15 @@ body .board__square .disc::after {
 body .board__square .disc:active {
   background-color: #bdc3c7;
 }
+body .board__square .hint {
+  position: relative;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #bdc3c7;
+}
 body .board__square--light {
   background-color: #f5b553;
 }

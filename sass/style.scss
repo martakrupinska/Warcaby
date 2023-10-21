@@ -65,6 +65,15 @@ body {
 			.disc:active {
 				background-color: #bdc3c7;
 			}
+			.hint {
+				position: relative;
+				border-radius: 50%;
+				width: calc($width - 2px);
+				height: calc($height - 2px);
+				text-align: center;
+				cursor: pointer;
+				background-color: #bdc3c7;
+			}
 		}
 
 		&__square--light {
