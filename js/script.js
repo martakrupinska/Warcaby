@@ -17,16 +17,16 @@ const setPiecesOnBoard = () => {
 		}
 	}
 };
-function createHint(parents) {
-//	let hints = [];
+function createHint(parent) {
+	//	let hints = [];
 
-	parents.forEach((parent) => {
-		const hint = document.createElement('div');
-		hint.classList.add('hint');
-		parent.appendChild(hint);
+	//parents.forEach((parent) => {
+	const hint = document.createElement('div');
+	hint.classList.add('hint');
+	parent.appendChild(hint);
 
-		//	hints.push(hint);
-	});
+	//	hints.push(hint);
+	//});
 
 	//	return hints;
 }
