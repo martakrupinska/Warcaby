@@ -34,27 +34,13 @@ class Discs {
 			return false;
 		}
 	}
-}
-
-class White extends Discs {
-	constructor(HTMLelement) {
-		super(HTMLelement);
+	findMaxColumnNumber() {
+		return boardPieces + 1;
 	}
-
-	findRowIndexesOfStep() {
-		let i = 1;
-		const row = [];
-		const maxRowNumber = boardPieces - this.getRowNumber();
-		//const column = [];
-		while (i <= maxRowNumber) {
-			row.push(this.getRowNumber() + i);
-			i++;
-		}
-		console.log(row);
-
+	findColumnIndexes() {
 		const col_min = [];
 		const col_max = [];
-		const maxColNumber = boardPieces + 1;
+		const maxColNumber = this.findMaxColumnNumber();
 
 		let j = 1;
 		while (j < maxColNumber) {
@@ -66,85 +52,98 @@ class White extends Discs {
 
 			j++;
 		}
-		console.log(col_max, col_min);
-		const indexes = [];
+		return [col_min, col_max];
+	}
 
-		let k = 1;
-		for (let g = 0; g < maxRowNumber; g++) {
+	findIndexesOfStep() {
+		const indexes = [];
+		const row = this.findRowIndexes();
+		const col_min = this.findColumnIndexes()[0];
+		const col_max = this.findColumnIndexes()[1];
+
+		for (let g = 0; g < this.findMaxRowNumber(); g++) {
 			indexes[g] = [row[g], col_min[g], col_max[g]];
 		}
-
-		/* for (let k = 0; k < maxRowNumber; k++) {
-			indexes[k] = [col_min.length[k]];
-			for (let g = 0; g < col_min.length; g++) {
-				indexes[k][g] = [row[g], col_min[g], col_max[g]];
-			}
-		} */
-		console.log(indexes[0]);
+		return indexes;
 	}
-	findNextStep() {
-		this.findRowIndexesOfStep();
-		//let hints;
-		const firstStep = getBoardElement(
-			this.getRowNumber(),
-			this.getColNumber() - 2
-		);
-		if (this.squareIsEmpty(firstStep)) {
-			createHint(firstStep);
-		} else if (this.squareIsNotEmpty(firstStep, 'white')) {
-			const firstStepNext = getBoardElement(
-				this.getRowNumber() + 1,
-				this.getColNumber() - 3
-			);
-			console.log(firstStepNext);
-			if (this.squareIsEmpty(firstStepNext)) {
-				createHint(firstStepNext);
+	createNextStep() {
+		const index = this.findIndexesOfStep();
+
+		for (let j = 1; j <= 2; j++) {
+			if (index[0][j] === undefined) {
+				continue;
+			}
+			const oneStep = getBoardElement(index[0][0], index[0][j]);
+			if (this.squareIsEmpty(oneStep)) {
+				createHint(oneStep);
+			} else if (this.squareIsNotEmpty(oneStep, this.getEnemyColor())) {
+				for (let i = 1; i < index.length; i++) {
+					if (index[i][j] === undefined) {
+						break;
+					}
+					let steps = getBoardElement(index[i][0], index[i][j]);
+					if (this.squareIsEmpty(steps)) {
+						createHint(steps);
+						break;
+					}
+				}
 			}
 		}
 	}
-	findHintElements() {
-		this.findNextStep();
-		const hintLeft = getBoardElement(
-			this.getRowNumber(),
-			this.getColNumber() - 2
-		);
-		console.log(hintLeft);
-		const hintRight = getBoardElement(this.getRowNumber(), this.getColNumber());
+}
 
-		return [hintLeft, hintRight].filter(function (hint) {
-			return hint !== undefined;
-		});
+class White extends Discs {
+	constructor(HTMLelement) {
+		super(HTMLelement);
+	}
+	getEnemyColor() {
+		return 'black';
+	}
+	findMaxRowNumber() {
+		return boardPieces - this.getRowNumber();
+	}
+	findRowIndexes() {
+		let i = 1;
+		const row = [];
+
+		while (i <= this.findMaxRowNumber()) {
+			row.push(this.getRowNumber() + i);
+			i++;
+		}
+		return row;
 	}
 }
 class Black extends Discs {
 	constructor(HTMLelement) {
 		super(HTMLelement);
 	}
-	findHintElements() {
-		const hintLeft = getBoardElement(
-			this.getRowNumber() - 2,
-			this.getColNumber() - 2
-		);
-		const hintRight = getBoardElement(
-			this.getRowNumber() - 2,
-			this.getColNumber()
-		);
+	getEnemyColor() {
+		return 'white';
+	}
+	findMaxRowNumber() {
+		return boardPieces - (boardPieces - this.getRowNumber() + 1);
+	}
+	findRowIndexes() {
+		let i = 1;
+		const row = [];
 
-		return [hintLeft, hintRight].filter(function (hint) {
-			return hint !== undefined;
-		});
+		while (i <= this.findMaxRowNumber()) {
+			row.push(this.getRowNumber() - i);
+			i++;
+		}
+		return row;
 	}
 }
 
-let hints;
 
 function getBoardElement(row, col) {
 	const allColumn = document.querySelectorAll('.board__square');
-	const index = row * boardPieces + col;
+	const index = (row - 1) * boardPieces + (col - 1);
 
 	if (allColumn[index].classList.contains('board__square--dark')) {
 		return allColumn[index];
 	}
+	return allColumn[index];
 }
 
 const discs = document.querySelectorAll('.disc');
@@ -165,7 +164,7 @@ function showPossibleMoves(e) {
 	}
 
 	if (disc) {
-		disc.findNextStep();
+		disc.createNextStep();
 	}
 }
 
