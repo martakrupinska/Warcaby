@@ -26,16 +26,63 @@ body {
   font-size: 15px;
   margin: 0 20px;
 }
-body .board__dscrpt {
+body .main-table {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+body .main-table .gamer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 20px;
+}
+body .main-table .gamer__header {
+  font-size: 18px;
+  font-weight: 500;
+}
+body .main-table .gamer__name {
+  padding: 5px;
+}
+body .main-table .gamer__button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+body .main-table .gamer__button--edit {
+  color: #34495e;
+  font-size: 15px;
+  border: 0px;
+  cursor: pointer;
+}
+body .main-table .board__dscrpt {
   text-align: center;
   font-size: 10px;
 }
-body .board__square {
+body .main-table .board__square {
   width: 30px;
   height: 30px;
   padding: 1px;
 }
-body .board__square .disc {
+body .main-table .board__square .disc {
   position: relative;
   border-radius: 50%;
   width: 28px;
@@ -43,13 +90,13 @@ body .board__square .disc {
   text-align: center;
   cursor: pointer;
 }
-body .board__square .disc--white {
+body .main-table .board__square .disc--white {
   background-color: #fff;
 }
-body .board__square .disc--black {
+body .main-table .board__square .disc--black {
   background-color: #000000;
 }
-body .board__square .disc::after {
+body .main-table .board__square .disc::after {
   content: "";
   position: absolute;
   top: calc((100% - 12px) / 2);
@@ -60,10 +107,10 @@ body .board__square .disc::after {
   -webkit-box-shadow: 0px 0px 2px 1px #bdc3c7;
           box-shadow: 0px 0px 2px 1px #bdc3c7;
 }
-body .board__square .disc:active {
+body .main-table .board__square .disc:focus {
   background-color: #bdc3c7;
 }
-body .board__square .hint {
+body .main-table .board__square .hint {
   position: relative;
   border-radius: 50%;
   width: 28px;
@@ -72,9 +119,92 @@ body .board__square .hint {
   cursor: pointer;
   background-color: #bdc3c7;
 }
-body .board__square--light {
+body .main-table .board__square .disc__gamer {
+  position: relative;
+  border-radius: 50%;
+  text-align: center;
+  width: 38px;
+  height: 38px;
+}
+body .main-table .board__square .disc__gamer::after {
+  content: "";
+  position: absolute;
+  top: calc((100% - 17px) / 2);
+  left: calc((100% - 17px) / 2);
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  -webkit-box-shadow: 0px 0px 2px 1px #bdc3c7;
+          box-shadow: 0px 0px 2px 1px #bdc3c7;
+}
+body .main-table .board__square .disc__gamer--white {
+  background-color: white;
+}
+body .main-table .board__square .disc__gamer--black {
+  background-color: black;
+}
+body .main-table .board__square--gamer {
+  width: 40px;
+  height: 40px;
+}
+body .main-table .board__square--light {
   background-color: #f5b553;
 }
-body .board__square--dark {
+body .main-table .board__square--dark {
   background-color: #854836;
+}
+body .main-table .board__square--gamer {
+  background-color: #854836;
+}
+body .popup {
+  display: none;
+}
+
+@media (min-width: 672px) and (max-width: 990px) {
+  body .main-table .board__dscrpt {
+    font-size: 12px;
+  }
+  body .main-table .board__square {
+    width: 50px;
+    height: 50px;
+  }
+  body .main-table .board__square .disc {
+    width: 48px;
+    height: 48px;
+  }
+  body .main-table .board__square .disc::after {
+    content: "";
+    top: calc((100% - 22px) / 2);
+    left: calc((100% - 22px) / 2);
+    width: 22px;
+    height: 22px;
+  }
+  body .main-table .board__square .hint {
+    width: 48px;
+    height: 48px;
+  }
+}
+@media (min-width: 990px) {
+  body .main-table .board__dscrpt {
+    font-size: 12px;
+  }
+  body .main-table .board__square {
+    width: 60px;
+    height: 60px;
+  }
+  body .main-table .board__square .disc {
+    width: 58px;
+    height: 58px;
+  }
+  body .main-table .board__square .disc::after {
+    content: "";
+    top: calc((100% - 32px) / 2);
+    left: calc((100% - 32px) / 2);
+    width: 32px;
+    height: 32px;
+  }
+  body .main-table .board__square .hint {
+    width: 58px;
+    height: 58px;
+  }
 }/*# sourceMappingURL=style.css.map */

@@ -1,5 +1,6 @@
 import { createHint } from './script.js';
 let boardPieces = 8;
+
 class Discs {
 	constructor(HTMLelement) {
 		this.HTMLelement = HTMLelement;
@@ -17,23 +18,7 @@ class Discs {
 
 		return parseInt(col.indexOf(this.HTMLelement.parentElement));
 	}
-	squareIsEmpty(step) {
-		if (step && step.children.length === 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	squareIsNotEmpty(step, className) {
-		if (
-			step &&
-			step.children.item(0).classList.contains('disc--' + className)
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+
 	findMaxColumnNumber() {
 		return boardPieces + 1;
 	}
@@ -74,15 +59,15 @@ class Discs {
 				continue;
 			}
 			const oneStep = getBoardElement(index[0][0], index[0][j]);
-			if (this.squareIsEmpty(oneStep)) {
+			if (isSquareEmpty(oneStep)) {
 				createHint(oneStep);
-			} else if (this.squareIsNotEmpty(oneStep, this.getEnemyColor())) {
+			} else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
 				for (let i = 1; i < index.length; i++) {
 					if (index[i][j] === undefined) {
 						break;
 					}
 					let steps = getBoardElement(index[i][0], index[i][j]);
-					if (this.squareIsEmpty(steps)) {
+					if (isSquareEmpty(steps)) {
 						createHint(steps);
 						break;
 					}
@@ -94,11 +79,10 @@ class Discs {
 
 class White extends Discs {
 	constructor(HTMLelement) {
-		super(HTMLelement);
+		super(HTMLelement), (this.color = 'white');
+		this.enemyColor = 'black';
 	}
-	getEnemyColor() {
-		return 'black';
-	}
+
 	findMaxRowNumber() {
 		return boardPieces - this.getRowNumber();
 	}
@@ -115,10 +99,8 @@ class White extends Discs {
 }
 class Black extends Discs {
 	constructor(HTMLelement) {
-		super(HTMLelement);
-	}
-	getEnemyColor() {
-		return 'white';
+		super(HTMLelement), (this.color = 'black');
+		this.enemyColor = 'white';
 	}
 	findMaxRowNumber() {
 		return boardPieces - (boardPieces - this.getRowNumber() + 1);
@@ -135,7 +117,6 @@ class Black extends Discs {
 	}
 }
 
-
 function getBoardElement(row, col) {
 	const allColumn = document.querySelectorAll('.board__square');
 	const index = (row - 1) * boardPieces + (col - 1);
@@ -145,6 +126,20 @@ function getBoardElement(row, col) {
 	}
 	return allColumn[index];
 }
+
+const isSquareEmpty = (square) => {
+	if (!square) {
+		return false;
+	}
+	return !square.children.length;
+};
+
+const squareIsOccupiedByEnemy = (square, enemyColor) => {
+	if (!square) {
+		return false;
+	}
+	return square.children.item(0).classList.contains('disc--' + enemyColor);
+};
 
 const discs = document.querySelectorAll('.disc');
 
