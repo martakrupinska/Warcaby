@@ -9,21 +9,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <link rel="stylesheet" href="./css/style.css">
 
     <script defer type="module" src="js/script.js"></script>
     <script defer type="module" src="js/actions.js"></script>
 </head>
+<header>
+    <h1>Warcaby</h1>
+</header>
+<section>
+    opis coś tam ...
+</section>
 
-<body>
-    <header>
-        <h1>Warcaby</h1>
-    </header>
-    <section>
-        opis coś tam ...
-    </section>
-    <section>
+
+
+<section>
+    <div class="main-table">
+        <div class="gamer">
+            <p class="gamer__header">Gracz 1</p>
+            <div class="gamer__button">
+                <button class="gamer__button--edit material-symbols-outlined">edit</button>
+                <p type="text" class="gamer__name">Ktoś</p>
+            </div>
+
+            <div class="board">
+                <div class="board__square board__square--gamer">
+                    <div class="disc__gamer disc__gamer--white"></div>
+                </div>
+            </div>
+        </div>
+
         <table class="board">
             <tr>
                 <td></td>
@@ -74,18 +92,24 @@
                 <td class="board__square board__square--dark"></td>
                 <td class="board__square board__square--light"></td>
                 <td class="board__square board__square--dark">
-                    <div class="disc disc--white"></div>
+                    <div class="disc disc--black"></div>
                 </td>
                 <td class="board__square board__square--light"></td>
-                <td class="board__square board__square--dark"></td>
+                <td class="board__square board__square--dark">
+                    <div class="disc disc--white"></div>
+                </td>
                 <td class="board__square board__square--light"></td>
                 <td class="board__square board__square--dark"></td>
                 <td class="board__square board__square--light"></td>
             </tr>
             <tr>
                 <td class="board__dscrpt">5</td>
-                <td class="board__square board__square--light"></td>
-                <td class="board__square board__square--dark"></td>
+                <td class="board__square board__square--light">
+
+                </td>
+                <td class="board__square board__square--dark">
+                    <div class="disc disc--white"></div>
+                </td>
                 <td class="board__square board__square--light"></td>
                 <td class="board__square board__square--dark"></td>
                 <td class="board__square board__square--light"></td>
@@ -127,9 +151,38 @@
                 <td class="board__square board__square--light"></td>
             </tr>
         </table>
-    </section>
-    <footer>
 
-    </footer>
+        <div class="gamer">
+            <p class="gamer__header">Gracz 1</p>
+            <div class="gamer__button">
+                <button class="gamer__button--edit material-symbols-outlined">edit</button>
+                <p type="text" class="gamer__name">Ktoś</p>
+            </div>
+
+            <div class="board">
+                <div class="board__square board__square--gamer">
+                    <div class="disc__gamer disc__gamer--black"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="gamer">
+            <p class="gamer__name">Gracz 1</p>
+            <div class="board">
+                <div class="board__square board__square--dark">
+                    <div class="disc disc--white" </div>
+                    </div>
+                </div>
+            </div> -->
+
+
+</section>
+<div class="popup">
+    <p class="popup__dscrpt">Podaj swoje imię</p>
+    <input class="popup__input" type="text"></input>
+</div>
+<footer>
+
+</footer>
 
 </body>

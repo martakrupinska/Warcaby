@@ -25,62 +25,202 @@ body {
 	font-size: 15px;
 	margin: 0 20px;
 
-	.board {
-		&__dscrpt {
-			text-align: center;
-			font-size: 10px;
+	.main-table {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		.gamer {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+
+			&__header {
+				font-size: 18px;
+				font-weight: 500;
+			}
+			&__name {
+				padding: 5px;
+			}
+			&__button {
+				display: flex;
+				flex-direction: row;
+				&--edit {
+					color: #34495e;
+					font-size: 15px;
+					border: 0px;
+					cursor: pointer;
+				}
+			}
 		}
 
-		&__square {
-			width: $width;
-			height: $height;
-			//border: 1px solid black;
-			padding: 1px;
-
-			.disc {
-				position: relative;
-				border-radius: 50%;
-				width: calc($width - 2px);
-				height: calc($height - 2px);
+		.board {
+			&__dscrpt {
 				text-align: center;
-				cursor: pointer;
-			}
-			.disc--white {
-				background-color: #fff;
-			}
-			.disc--black {
-				background-color: #000000;
-			}
-			.disc::after {
-				content: '';
-				position: absolute;
-				top: calc(calc(100% - $height-min-circle) / 2);
-				left: calc(calc(100% - $width-min-circle) / 2);
-				border-radius: 50%;
-				width: $width-min-circle;
-				height: $height-min-circle;
-				box-shadow: 0px 0px 2px 1px #bdc3c7;
+				font-size: 10px;
 			}
 
-			.disc:active {
-				background-color: #bdc3c7;
-			}
-			.hint {
-				position: relative;
-				border-radius: 50%;
-				width: calc($width - 2px);
-				height: calc($height - 2px);
-				text-align: center;
-				cursor: pointer;
-				background-color: #bdc3c7;
-			}
-		}
+			&__square {
+				width: $width;
+				height: $height;
+				//border: 1px solid black;
+				padding: 1px;
 
-		&__square--light {
-			background-color: #f5b553;
+				.disc {
+					position: relative;
+					border-radius: 50%;
+					width: calc($width - 2px);
+					height: calc($height - 2px);
+					text-align: center;
+					cursor: pointer;
+				}
+				.disc--white {
+					background-color: #fff;
+				}
+				.disc--black {
+					background-color: #000000;
+				}
+				.disc::after {
+					content: '';
+					position: absolute;
+					top: calc(calc(100% - $height-min-circle) / 2);
+					left: calc(calc(100% - $width-min-circle) / 2);
+					border-radius: 50%;
+					width: $width-min-circle;
+					height: $height-min-circle;
+					box-shadow: 0px 0px 2px 1px #bdc3c7;
+				}
+
+				.disc:focus {
+					background-color: #bdc3c7;
+				}
+				.hint {
+					position: relative;
+					border-radius: 50%;
+					width: calc($width - 2px);
+					height: calc($height - 2px);
+					text-align: center;
+					cursor: pointer;
+					background-color: #bdc3c7;
+				}
+
+				.disc__gamer {
+					position: relative;
+					border-radius: 50%;
+					text-align: center;
+					width: calc(calc($width + 10px) - 2px);
+					height: calc(calc($height + 10px) - 2px);
+				}
+				.disc__gamer::after {
+					content: '';
+					position: absolute;
+					top: calc(calc(100% - calc($height-min-circle + 5px)) / 2);
+					left: calc(calc(100% - calc($width-min-circle + 5px)) / 2);
+					border-radius: 50%;
+					width: calc($width-min-circle + 5px);
+					height: calc($height-min-circle + 5px);
+					box-shadow: 0px 0px 2px 1px #bdc3c7;
+				}
+				.disc__gamer--white {
+					background-color: white;
+				}
+				.disc__gamer--black {
+					background-color: black;
+				}
+			}
+
+			&__square--gamer {
+				width: calc($width + 10px);
+				height: calc($height + 10px);
+			}
+
+			&__square--light {
+				background-color: #f5b553;
+			}
+			&__square--dark {
+				background-color: #854836;
+			}
+			&__square--gamer {
+				background-color: #854836;
+			}
 		}
-		&__square--dark {
-			background-color: #854836;
+	}
+	.popup {
+		display: none;
+	}
+}
+
+@media (min-width: 672px) and (max-width: 990px) {
+	$newWidth: $width + 20px;
+	$newHeight: $height + 20px;
+	$new-width-min-circle: 22px; //calc(calc($width - 6px) / 2);
+	$new-height-min-circle: 22px;
+	body {
+		.main-table {
+			.board {
+				&__dscrpt {
+					font-size: 12px;
+				}
+
+				&__square {
+					width: $newWidth;
+					height: $newHeight;
+
+					.disc {
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+					.disc::after {
+						content: '';
+						top: calc(calc(100% - $new-height-min-circle) / 2);
+						left: calc(calc(100% - $new-width-min-circle) / 2);
+						width: $new-width-min-circle;
+						height: $new-height-min-circle;
+					}
+					.hint {
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (min-width: 990px) {
+	$newWidth: $width + 30px;
+	$newHeight: $height + 30px;
+	$new-width-min-circle: 32px; //calc(calc($width - 6px) / 2);
+	$new-height-min-circle: 32px;
+	body {
+		.main-table {
+			.board {
+				&__dscrpt {
+					font-size: 12px;
+				}
+
+				&__square {
+					width: $newWidth;
+					height: $newHeight;
+
+					.disc {
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+					.disc::after {
+						content: '';
+						top: calc(calc(100% - $new-height-min-circle) / 2);
+						left: calc(calc(100% - $new-width-min-circle) / 2);
+						width: $new-width-min-circle;
+						height: $new-height-min-circle;
+					}
+					.hint {
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+				}
+			}
 		}
 	}
 }
