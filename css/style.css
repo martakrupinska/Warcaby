@@ -157,7 +157,42 @@ body .main-table .board__square--gamer {
   background-color: #854836;
 }
 body .popup {
-  display: none;
+  /* position: absolute;
+  bottom: 54px;
+  left: 229px; */
+  width: 300px;
+  height: 120px;
+  background-color: #ecf0f1;
+  padding: 10px;
+}
+body .popup .popup__dscrpt {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+}
+body .popup .popup__input {
+  display: block;
+  margin: 5px 0px;
+  border: 0;
+  padding: 5px;
+  width: 100%;
+  background-color: white;
+}
+body .popup .popup__button {
+  display: inline-block;
+  padding: 8px;
+  text-transform: uppercase;
+  border: 0;
+  color: #ecf0f1;
+  width: 70px;
+  margin-left: 45px;
+}
+body .popup .popup__button--accept {
+  background-color: #2ecc71;
+}
+body .popup .popup__button--cancel {
+  background-color: #e74c3c;
 }
 
 @media (min-width: 672px) and (max-width: 990px) {
