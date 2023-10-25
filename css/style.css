@@ -57,6 +57,7 @@ body .main-table .gamer__header {
 }
 body .main-table .gamer__name {
   padding: 5px;
+  height: 30px;
 }
 body .main-table .gamer__button {
   display: -webkit-box;
@@ -162,6 +163,7 @@ body .popup {
   left: 229px; */
   width: 300px;
   height: 120px;
+  opacity: 0;
   background-color: #ecf0f1;
   padding: 10px;
 }
@@ -187,6 +189,7 @@ body .popup .popup__button {
   color: #ecf0f1;
   width: 70px;
   margin-left: 45px;
+  cursor: pointer;
 }
 body .popup .popup__button--accept {
   background-color: #2ecc71;
