@@ -118,7 +118,7 @@ class Black extends Discs {
 }
 
 function getBoardElement(row, col) {
-	const allColumn = document.querySelectorAll('.board__square');
+	const allColumn = document.querySelectorAll('tr .board__square');
 	const index = (row - 1) * boardPieces + (col - 1);
 
 	if (allColumn[index].classList.contains('board__square--dark')) {

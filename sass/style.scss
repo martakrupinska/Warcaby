@@ -31,29 +31,7 @@ body {
 		align-items: center;
 
 		.gamer {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			padding: 20px;
-
-			&__header {
-				font-size: 18px;
-				font-weight: 500;
-			}
-			&__name {
-				padding: 5px;
-				height: 30px;
-			}
-			&__button {
-				display: flex;
-				flex-direction: row;
-				&--edit {
-					color: #34495e;
-					font-size: 15px;
-					border: 0px;
-					cursor: pointer;
-				}
-			}
+			display: none;
 		}
 
 		.board {
@@ -105,30 +83,6 @@ body {
 					cursor: pointer;
 					background-color: #bdc3c7;
 				}
-
-				.disc__gamer {
-					position: relative;
-					border-radius: 50%;
-					text-align: center;
-					width: calc(calc($width + 10px) - 2px);
-					height: calc(calc($height + 10px) - 2px);
-				}
-				.disc__gamer::after {
-					content: '';
-					position: absolute;
-					top: calc(calc(100% - calc($height-min-circle + 5px)) / 2);
-					left: calc(calc(100% - calc($width-min-circle + 5px)) / 2);
-					border-radius: 50%;
-					width: calc($width-min-circle + 5px);
-					height: calc($height-min-circle + 5px);
-					box-shadow: 0px 0px 2px 1px #bdc3c7;
-				}
-				.disc__gamer--white {
-					background-color: white;
-				}
-				.disc__gamer--black {
-					background-color: black;
-				}
 			}
 
 			&__square--gamer {
@@ -148,48 +102,7 @@ body {
 		}
 	}
 	.popup {
-		/* position: absolute;
-		bottom: 54px;
-		left: 229px; */
-		width: 300px;
-		height: 120px;
-		opacity: 0;
-		//display: none;
-		background-color: #ecf0f1;
-		padding: 10px;
-
-		.popup__dscrpt {
-			display: block;
-			width: 100%;
-			text-align: center;
-			font-weight: 500;
-		}
-
-		.popup__input {
-			display: block;
-			margin: 5px 0px;
-			border: 0;
-			padding: 5px;
-			width: 100%;
-			background-color: white;
-		}
-
-		.popup__button {
-			display: inline-block;
-			padding: 8px;
-			text-transform: uppercase;
-			border: 0;
-			color: #ecf0f1;
-			width: 70px;
-			margin-left: 45px;
-			cursor: pointer;
-		}
-		.popup__button--accept {
-			background-color: #2ecc71;
-		}
-		.popup__button--cancel {
-			background-color: #e74c3c;
-		}
+		display: none;
 	}
 }
 
@@ -200,6 +113,32 @@ body {
 	$new-height-min-circle: 22px;
 	body {
 		.main-table {
+			.gamer {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 20px;
+
+				&__header {
+					font-size: 18px;
+					font-weight: 500;
+				}
+				&__name {
+					padding: 5px;
+					height: 30px;
+				}
+				&__button {
+					display: flex;
+					flex-direction: row;
+					&--edit {
+						color: #34495e;
+						font-size: 15px;
+						border: 0px;
+						cursor: pointer;
+					}
+				}
+			}
+
 			.board {
 				&__dscrpt {
 					font-size: 12px;
@@ -224,7 +163,75 @@ body {
 						width: calc($newWidth - 2px);
 						height: calc($newHeight - 2px);
 					}
+
+					.disc__gamer {
+						position: relative;
+						border-radius: 50%;
+						text-align: center;
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+					.disc__gamer::after {
+						content: '';
+						position: absolute;
+						top: calc(calc(100% - $new-height-min-circle) / 2);
+						left: calc(calc(100% - $new-width-min-circle) / 2);
+						border-radius: 50%;
+						width: $new-width-min-circle;
+						height: $new-height-min-circle;
+						box-shadow: 0px 0px 2px 1px #bdc3c7;
+					}
+					.disc__gamer--white {
+						background-color: white;
+					}
+					.disc__gamer--black {
+						background-color: black;
+					}
 				}
+			}
+		}
+		.popup {
+			/* position: absolute;
+			bottom: 54px;
+			left: 229px; */
+			display: block;
+			width: 300px;
+			height: 120px;
+			opacity: 0;
+			background-color: #ecf0f1;
+			padding: 10px;
+
+			.popup__dscrpt {
+				display: block;
+				width: 100%;
+				text-align: center;
+				font-weight: 500;
+			}
+
+			.popup__input {
+				display: block;
+				margin: 5px 0px;
+				border: 0;
+				padding: 5px;
+				width: 100%;
+				background-color: white;
+			}
+
+			.popup__button {
+				display: inline-block;
+				padding: 8px;
+				text-transform: uppercase;
+				border: 0;
+				color: #ecf0f1;
+				width: 70px;
+				margin-left: 45px;
+				cursor: pointer;
+			}
+			.popup__button--accept {
+				background-color: #2ecc71;
+			}
+			.popup__button--cancel {
+				background-color: #e74c3c;
 			}
 		}
 	}
@@ -237,6 +244,32 @@ body {
 	$new-height-min-circle: 32px;
 	body {
 		.main-table {
+			.gamer {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 20px;
+
+				&__header {
+					font-size: 18px;
+					font-weight: 500;
+				}
+				&__name {
+					padding: 5px;
+					height: 30px;
+				}
+				&__button {
+					display: flex;
+					flex-direction: row;
+					&--edit {
+						color: #34495e;
+						font-size: 15px;
+						border: 0px;
+						cursor: pointer;
+					}
+				}
+			}
+
 			.board {
 				&__dscrpt {
 					font-size: 12px;
@@ -261,7 +294,74 @@ body {
 						width: calc($newWidth - 2px);
 						height: calc($newHeight - 2px);
 					}
+					.disc__gamer {
+						position: relative;
+						border-radius: 50%;
+						text-align: center;
+						width: calc($newWidth - 2px);
+						height: calc($newHeight - 2px);
+					}
+					.disc__gamer::after {
+						content: '';
+						position: absolute;
+						top: calc(calc(100% - $new-height-min-circle) / 2);
+						left: calc(calc(100% - $new-width-min-circle) / 2);
+						border-radius: 50%;
+						width: $new-width-min-circle;
+						height: $new-height-min-circle;
+						box-shadow: 0px 0px 2px 1px #bdc3c7;
+					}
+					.disc__gamer--white {
+						background-color: white;
+					}
+					.disc__gamer--black {
+						background-color: black;
+					}
 				}
+			}
+		}
+		.popup {
+			/* position: absolute;
+			bottom: 54px;
+			left: 229px; */
+			display: block;
+			width: 300px;
+			height: 120px;
+			opacity: 0;
+			background-color: #ecf0f1;
+			padding: 10px;
+
+			.popup__dscrpt {
+				display: block;
+				width: 100%;
+				text-align: center;
+				font-weight: 500;
+			}
+
+			.popup__input {
+				display: block;
+				margin: 5px 0px;
+				border: 0;
+				padding: 5px;
+				width: 100%;
+				background-color: white;
+			}
+
+			.popup__button {
+				display: inline-block;
+				padding: 8px;
+				text-transform: uppercase;
+				border: 0;
+				color: #ecf0f1;
+				width: 70px;
+				margin-left: 45px;
+				cursor: pointer;
+			}
+			.popup__button--accept {
+				background-color: #2ecc71;
+			}
+			.popup__button--cancel {
+				background-color: #e74c3c;
 			}
 		}
 	}

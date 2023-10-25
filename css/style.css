@@ -39,40 +39,7 @@ body .main-table {
           align-items: center;
 }
 body .main-table .gamer {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 20px;
-}
-body .main-table .gamer__header {
-  font-size: 18px;
-  font-weight: 500;
-}
-body .main-table .gamer__name {
-  padding: 5px;
-  height: 30px;
-}
-body .main-table .gamer__button {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-}
-body .main-table .gamer__button--edit {
-  color: #34495e;
-  font-size: 15px;
-  border: 0px;
-  cursor: pointer;
+  display: none;
 }
 body .main-table .board__dscrpt {
   text-align: center;
@@ -120,30 +87,6 @@ body .main-table .board__square .hint {
   cursor: pointer;
   background-color: #bdc3c7;
 }
-body .main-table .board__square .disc__gamer {
-  position: relative;
-  border-radius: 50%;
-  text-align: center;
-  width: 38px;
-  height: 38px;
-}
-body .main-table .board__square .disc__gamer::after {
-  content: "";
-  position: absolute;
-  top: calc((100% - 17px) / 2);
-  left: calc((100% - 17px) / 2);
-  border-radius: 50%;
-  width: 17px;
-  height: 17px;
-  -webkit-box-shadow: 0px 0px 2px 1px #bdc3c7;
-          box-shadow: 0px 0px 2px 1px #bdc3c7;
-}
-body .main-table .board__square .disc__gamer--white {
-  background-color: white;
-}
-body .main-table .board__square .disc__gamer--black {
-  background-color: black;
-}
 body .main-table .board__square--gamer {
   width: 40px;
   height: 40px;
@@ -158,47 +101,46 @@ body .main-table .board__square--gamer {
   background-color: #854836;
 }
 body .popup {
-  /* position: absolute;
-  bottom: 54px;
-  left: 229px; */
-  width: 300px;
-  height: 120px;
-  opacity: 0;
-  background-color: #ecf0f1;
-  padding: 10px;
-}
-body .popup .popup__dscrpt {
-  display: block;
-  width: 100%;
-  text-align: center;
-  font-weight: 500;
-}
-body .popup .popup__input {
-  display: block;
-  margin: 5px 0px;
-  border: 0;
-  padding: 5px;
-  width: 100%;
-  background-color: white;
-}
-body .popup .popup__button {
-  display: inline-block;
-  padding: 8px;
-  text-transform: uppercase;
-  border: 0;
-  color: #ecf0f1;
-  width: 70px;
-  margin-left: 45px;
-  cursor: pointer;
-}
-body .popup .popup__button--accept {
-  background-color: #2ecc71;
-}
-body .popup .popup__button--cancel {
-  background-color: #e74c3c;
+  display: none;
 }
 
 @media (min-width: 672px) and (max-width: 990px) {
+  body .main-table .gamer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding: 20px;
+  }
+  body .main-table .gamer__header {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  body .main-table .gamer__name {
+    padding: 5px;
+    height: 30px;
+  }
+  body .main-table .gamer__button {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+  }
+  body .main-table .gamer__button--edit {
+    color: #34495e;
+    font-size: 15px;
+    border: 0px;
+    cursor: pointer;
+  }
   body .main-table .board__dscrpt {
     font-size: 12px;
   }
@@ -221,8 +163,109 @@ body .popup .popup__button--cancel {
     width: 48px;
     height: 48px;
   }
+  body .main-table .board__square .disc__gamer {
+    position: relative;
+    border-radius: 50%;
+    text-align: center;
+    width: 48px;
+    height: 48px;
+  }
+  body .main-table .board__square .disc__gamer::after {
+    content: "";
+    position: absolute;
+    top: calc((100% - 22px) / 2);
+    left: calc((100% - 22px) / 2);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    -webkit-box-shadow: 0px 0px 2px 1px #bdc3c7;
+            box-shadow: 0px 0px 2px 1px #bdc3c7;
+  }
+  body .main-table .board__square .disc__gamer--white {
+    background-color: white;
+  }
+  body .main-table .board__square .disc__gamer--black {
+    background-color: black;
+  }
+  body .popup {
+    /* position: absolute;
+    bottom: 54px;
+    left: 229px; */
+    display: block;
+    width: 300px;
+    height: 120px;
+    opacity: 0;
+    background-color: #ecf0f1;
+    padding: 10px;
+  }
+  body .popup .popup__dscrpt {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+  }
+  body .popup .popup__input {
+    display: block;
+    margin: 5px 0px;
+    border: 0;
+    padding: 5px;
+    width: 100%;
+    background-color: white;
+  }
+  body .popup .popup__button {
+    display: inline-block;
+    padding: 8px;
+    text-transform: uppercase;
+    border: 0;
+    color: #ecf0f1;
+    width: 70px;
+    margin-left: 45px;
+    cursor: pointer;
+  }
+  body .popup .popup__button--accept {
+    background-color: #2ecc71;
+  }
+  body .popup .popup__button--cancel {
+    background-color: #e74c3c;
+  }
 }
 @media (min-width: 990px) {
+  body .main-table .gamer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding: 20px;
+  }
+  body .main-table .gamer__header {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  body .main-table .gamer__name {
+    padding: 5px;
+    height: 30px;
+  }
+  body .main-table .gamer__button {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+  }
+  body .main-table .gamer__button--edit {
+    color: #34495e;
+    font-size: 15px;
+    border: 0px;
+    cursor: pointer;
+  }
   body .main-table .board__dscrpt {
     font-size: 12px;
   }
@@ -244,5 +287,70 @@ body .popup .popup__button--cancel {
   body .main-table .board__square .hint {
     width: 58px;
     height: 58px;
+  }
+  body .main-table .board__square .disc__gamer {
+    position: relative;
+    border-radius: 50%;
+    text-align: center;
+    width: 58px;
+    height: 58px;
+  }
+  body .main-table .board__square .disc__gamer::after {
+    content: "";
+    position: absolute;
+    top: calc((100% - 32px) / 2);
+    left: calc((100% - 32px) / 2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    -webkit-box-shadow: 0px 0px 2px 1px #bdc3c7;
+            box-shadow: 0px 0px 2px 1px #bdc3c7;
+  }
+  body .main-table .board__square .disc__gamer--white {
+    background-color: white;
+  }
+  body .main-table .board__square .disc__gamer--black {
+    background-color: black;
+  }
+  body .popup {
+    /* position: absolute;
+    bottom: 54px;
+    left: 229px; */
+    display: block;
+    width: 300px;
+    height: 120px;
+    opacity: 0;
+    background-color: #ecf0f1;
+    padding: 10px;
+  }
+  body .popup .popup__dscrpt {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+  }
+  body .popup .popup__input {
+    display: block;
+    margin: 5px 0px;
+    border: 0;
+    padding: 5px;
+    width: 100%;
+    background-color: white;
+  }
+  body .popup .popup__button {
+    display: inline-block;
+    padding: 8px;
+    text-transform: uppercase;
+    border: 0;
+    color: #ecf0f1;
+    width: 70px;
+    margin-left: 45px;
+    cursor: pointer;
+  }
+  body .popup .popup__button--accept {
+    background-color: #2ecc71;
+  }
+  body .popup .popup__button--cancel {
+    background-color: #e74c3c;
   }
 }/*# sourceMappingURL=style.css.map */
