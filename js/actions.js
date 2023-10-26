@@ -1,5 +1,7 @@
 import { createHint } from './script.js';
 let boardPieces = 8;
+let dragged;
+let placesToMoveDraggedElement;
 
 class Discs {
 	constructor(HTMLelement) {
@@ -51,8 +53,10 @@ class Discs {
 		}
 		return indexes;
 	}
-	createNextStep() {
+
+	findNextStep() {
 		const index = this.findIndexesOfStep();
+		let placesToMove = [];
 
 		for (let j = 1; j <= 2; j++) {
 			if (index[0][j] === undefined) {
@@ -60,7 +64,7 @@ class Discs {
 			}
 			const oneStep = getBoardElement(index[0][0], index[0][j]);
 			if (isSquareEmpty(oneStep)) {
-				createHint(oneStep);
+				placesToMove.push(oneStep);
 			} else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
 				for (let i = 1; i < index.length; i++) {
 					if (index[i][j] === undefined) {
@@ -68,12 +72,20 @@ class Discs {
 					}
 					let steps = getBoardElement(index[i][0], index[i][j]);
 					if (isSquareEmpty(steps)) {
-						createHint(steps);
+						placesToMove.push(steps);
 						break;
 					}
 				}
 			}
 		}
+		return placesToMove;
+	}
+	createNextStep() {
+		const steps = this.findNextStep();
+
+		steps.forEach((step) => {
+			createHint(step);
+		});
 	}
 }
 
@@ -142,8 +154,9 @@ const squareIsOccupiedByEnemy = (square, enemyColor) => {
 };
 
 const discs = document.querySelectorAll('.disc');
+const darkSquares = document.querySelectorAll('.board__square--dark');
 
-function showPossibleMoves(e) {
+function createObjectDisc(e) {
 	let disc;
 
 	const activeDisc = e.target;
@@ -158,6 +171,11 @@ function showPossibleMoves(e) {
 		disc = new Black(activeDisc);
 	}
 
+	return disc;
+}
+
+function showPossibleMoves(e) {
+	const disc = createObjectDisc(e);
 	if (disc) {
 		disc.createNextStep();
 	}
@@ -170,7 +188,38 @@ function removePossibleMoves() {
 	});
 }
 
+function chooseDiscToMove(e) {
+	dragged = createObjectDisc(e);
+}
+
+function changeStateOfDisc(e) {
+	e.preventDefault();
+}
+
+function moveDisc(e) {
+	e.preventDefault();
+	const target = e.target.closest('.board__square--dark');
+
+	removePossibleMoves();
+
+	const indexes = dragged.findNextStep();
+	if (!indexes) {
+		return false;
+	}
+
+	if (indexes.includes(target)) {
+		dragged.HTMLelement.parentNode.removeChild(dragged.HTMLelement);
+		target.appendChild(dragged.HTMLelement);
+	}
+}
+
 discs.forEach((disc) => {
 	disc.addEventListener('mouseenter', showPossibleMoves, false);
 	disc.addEventListener('mouseleave', removePossibleMoves, false);
+	disc.addEventListener('dragstart', chooseDiscToMove);
+});
+
+darkSquares.forEach((square) => {
+	square.addEventListener('dragover', changeStateOfDisc);
+	square.addEventListener('drop', moveDisc);
 });

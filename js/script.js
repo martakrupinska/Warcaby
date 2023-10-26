@@ -5,6 +5,7 @@ let popup;
 function createDisc(classColor) {
 	const disc = document.createElement('div');
 	disc.classList.add('disc', 'disc--' + classColor);
+	disc.setAttribute('draggable', 'true');
 	return disc;
 }
 
