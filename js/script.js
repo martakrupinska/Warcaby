@@ -1,5 +1,7 @@
 let numberOfDiscs = 12;
-let gamer;
+let editBtnGamerElement;
+let popup;
+
 function createDisc(classColor) {
 	const disc = document.createElement('div');
 	disc.classList.add('disc', 'disc--' + classColor);
@@ -34,34 +36,40 @@ function saveGamerName(e) {
 	if (!name) {
 		return;
 	}
-	const gamerNamePlace = gamer.parentElement.querySelector('.gamer__name');
+	const gamerNamePlace =
+		editBtnGamerElement.parentElement.querySelector('.gamer__name');
 
 	gamerNamePlace.textContent = name;
-
-	const popup = e.target.parentElement;
+	//const popup = e.target.parentElement;
 	popup.style.opacity = 0;
 }
 
 function cancelPopup(e) {
-	e.target.parentElement.style.opacity = 0;
+	//e.target.parentElement.style.opacity = 0;
+	popup.style.opacity = 0;
 }
 
 function showPopUpWithUserName(e) {
-	gamer = e.target.parentElement.previousElementSibling;
-	const gamerName = gamer.textContent;
+	editBtnGamerElement = e.target.parentElement.previousElementSibling;
+	const editBtnGamerNumber = editBtnGamerElement.textContent;
+	const editBtnGamerName = e.target.nextElementSibling.textContent;
 
-	if (!gamer) {
+	if (!editBtnGamerElement) {
 		return false;
 	}
 
-	const popup = document.querySelector('.popup');
+	popup = document.querySelector('.popup');
 	const gamerNumber = popup.querySelector('.popup__dscrpt');
-	const gamerName1 = popup.querySelector('.popup__input');
+	const gamerName = popup.querySelector('.popup__input');
 
-	gamerName1.value = '';
+	if (editBtnGamerName) {
+		gamerName.value = editBtnGamerName;
+	} else {
+		gamerName.value = '';
+	}
 
 	popup.style.opacity = 1;
-	gamerNumber.textContent = gamerName;
+	gamerNumber.textContent = editBtnGamerNumber;
 
 	const saveBtn = popup.querySelector('.popup__button--accept');
 	const cancelBtn = popup.querySelector('.popup__button--cancel');
