@@ -192,15 +192,17 @@ function chooseDiscToMove(e) {
 	dragged = createObjectDisc(e);
 }
 
-function changeStateOfDisc(e) {
+/* function changeStateOfDisc(e) {
 	e.preventDefault();
-}
+} */
 
 function moveDisc(e) {
 	e.preventDefault();
 	const target = e.target.closest('.board__square--dark');
 
 	removePossibleMoves();
+
+	target.style.cursor = 'pointer';
 
 	const indexes = dragged.findNextStep();
 	if (!indexes) {
@@ -216,10 +218,12 @@ function moveDisc(e) {
 discs.forEach((disc) => {
 	disc.addEventListener('mouseenter', showPossibleMoves, false);
 	disc.addEventListener('mouseleave', removePossibleMoves, false);
-	disc.addEventListener('dragstart', chooseDiscToMove);
+	//disc.addEventListener('dragstart', chooseDiscToMove);
+	disc.addEventListener('click', chooseDiscToMove);
 });
 
 darkSquares.forEach((square) => {
-	square.addEventListener('dragover', changeStateOfDisc);
-	square.addEventListener('drop', moveDisc);
+	square.addEventListener('click', moveDisc);
+	//	square.addEventListener('dragover', changeStateOfDisc);
+	//square.addEventListener('drop', moveDisc);
 });
