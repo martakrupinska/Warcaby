@@ -1,7 +1,6 @@
 import { createHint } from './script.js';
 let boardPieces = 8;
 let dragged;
-let placesToMoveDraggedElement;
 
 class Discs {
 	constructor(HTMLelement) {
@@ -158,7 +157,6 @@ const darkSquares = document.querySelectorAll('.board__square--dark');
 
 function createObjectDisc(e) {
 	let disc;
-
 	const activeDisc = e.target;
 
 	if (!activeDisc) {
@@ -189,23 +187,25 @@ function removePossibleMoves() {
 }
 
 function chooseDiscToMove(e) {
+	removePossibleMoves();
 	dragged = createObjectDisc(e);
+	showPossibleMoves(e);
 }
 
-/* function changeStateOfDisc(e) {
-	e.preventDefault();
-} */
-
 function moveDisc(e) {
-	e.preventDefault();
+	
+	if (e.target.classList.contains('disc')) {
+		return false;
+	}
 	const target = e.target.closest('.board__square--dark');
-
+	if (!target.children.length) {
+		return false;
+	}
 	removePossibleMoves();
-
-	target.style.cursor = 'pointer';
 
 	const indexes = dragged.findNextStep();
 	if (!indexes) {
+		removePossibleMoves();
 		return false;
 	}
 
@@ -216,8 +216,6 @@ function moveDisc(e) {
 }
 
 discs.forEach((disc) => {
-	disc.addEventListener('mouseenter', showPossibleMoves, false);
-	disc.addEventListener('mouseleave', removePossibleMoves, false);
 	//disc.addEventListener('dragstart', chooseDiscToMove);
 	disc.addEventListener('click', chooseDiscToMove);
 });

@@ -87,6 +87,7 @@ body .main-table .board__square .hint {
   text-align: center;
   cursor: pointer;
   background-color: #bdc3c7;
+  opacity: 0.3;
 }
 body .main-table .board__square--gamer {
   width: 40px;
