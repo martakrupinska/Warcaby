@@ -1,6 +1,7 @@
 import { createHint } from './script.js';
 let boardPieces = 8;
 let dragged;
+let startSquare;
 
 class Discs {
 	constructor(HTMLelement) {
@@ -189,11 +190,11 @@ function removePossibleMoves() {
 function chooseDiscToMove(e) {
 	removePossibleMoves();
 	dragged = createObjectDisc(e);
+	startSquare = e.target;
 	showPossibleMoves(e);
 }
 
 function moveDisc(e) {
-	
 	if (e.target.classList.contains('disc')) {
 		return false;
 	}
@@ -202,7 +203,7 @@ function moveDisc(e) {
 		return false;
 	}
 	removePossibleMoves();
-
+	const start = startSquare.parentElement;
 	const indexes = dragged.findNextStep();
 	if (!indexes) {
 		removePossibleMoves();
@@ -213,7 +214,20 @@ function moveDisc(e) {
 		dragged.HTMLelement.parentNode.removeChild(dragged.HTMLelement);
 		target.appendChild(dragged.HTMLelement);
 	}
+
+	const startRow = start.parentElement.firstElementChild.textContent;
+	const moveRow = target.parentElement.firstElementChild.textContent;
+	console.log(startRow, moveRow);
+	//zbijanie
+	if (
+		parseInt(startRow) === parseInt(moveRow) + 2 ||
+		parseInt(startRow) === parseInt(moveRow) - 2
+	) {
+		console.log('zbijamy');
+	}
 }
+
+function captureEnemyDisc(e) {}
 
 discs.forEach((disc) => {
 	//disc.addEventListener('dragstart', chooseDiscToMove);
