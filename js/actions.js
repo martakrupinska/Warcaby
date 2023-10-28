@@ -1,5 +1,5 @@
 import { createHint } from './script.js';
-let boardPieces = 8;
+const boardPieces = 8;
 let dragged;
 let startSquare;
 
@@ -57,6 +57,7 @@ class Discs {
 	findNextStep() {
 		const index = this.findIndexesOfStep();
 		let placesToMove = [];
+		let enemyDisc = [];
 
 		for (let j = 1; j <= 2; j++) {
 			if (index[0][j] === undefined) {
@@ -66,6 +67,7 @@ class Discs {
 			if (isSquareEmpty(oneStep)) {
 				placesToMove.push(oneStep);
 			} else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
+				enemyDisc.push(oneStep, index[0][0], index[0][j]);
 				for (let i = 1; i < index.length; i++) {
 					if (index[i][j] === undefined) {
 						break;
@@ -78,12 +80,12 @@ class Discs {
 				}
 			}
 		}
-		return placesToMove;
+		return { placesToMove: placesToMove, enemyDisc: enemyDisc };
 	}
 	createNextStep() {
 		const steps = this.findNextStep();
 
-		steps.forEach((step) => {
+		steps.placesToMove.forEach((step) => {
 			createHint(step);
 		});
 	}
@@ -205,25 +207,48 @@ function moveDisc(e) {
 	removePossibleMoves();
 	const start = startSquare.parentElement;
 	const indexes = dragged.findNextStep();
-	if (!indexes) {
+
+	if (!indexes.placesToMove) {
 		removePossibleMoves();
 		return false;
 	}
 
-	if (indexes.includes(target)) {
+	if (indexes.placesToMove.includes(target)) {
 		dragged.HTMLelement.parentNode.removeChild(dragged.HTMLelement);
 		target.appendChild(dragged.HTMLelement);
 	}
 
 	const startRow = start.parentElement.firstElementChild.textContent;
-	const moveRow = target.parentElement.firstElementChild.textContent;
-	console.log(startRow, moveRow);
+	const movedRow = dragged.getRowNumber();
+	const movedColumn = dragged.getColNumber();
+
 	//zbijanie
 	if (
-		parseInt(startRow) === parseInt(moveRow) + 2 ||
-		parseInt(startRow) === parseInt(moveRow) - 2
+		parseInt(startRow) === parseInt(movedRow) + 2 ||
+		parseInt(startRow) === parseInt(movedRow) - 2
 	) {
-		console.log('zbijamy');
+		let enemyElement = null;
+
+		let i = 0;
+		while (i < indexes.enemyDisc.length) {
+			if (indexes.enemyDisc[i + 1] === parseInt(startRow) + 1 || indexes.enemyDisc[i + 1] === parseInt(startRow) - 1) {
+				if (indexes.enemyDisc[i + 2] === parseInt(movedColumn) - 1) {
+					enemyElement = indexes.enemyDisc[i];
+				} else if (indexes.enemyDisc[i + 2] === parseInt(movedColumn) + 1) {
+					enemyElement = indexes.enemyDisc[i];
+				}
+			}
+			i = i + 3;
+		}
+		console.log(enemyElement);
+		if (
+			enemyElement &&
+			enemyElement.firstElementChild.classList.contains(
+				'disc--' + dragged.enemyColor
+			)
+		) {
+			enemyElement.removeChild(enemyElement.firstElementChild);
+		}
 	}
 }
 
