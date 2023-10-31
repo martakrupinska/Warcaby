@@ -58,6 +58,7 @@ class Discs {
 		const index = this.findIndexesOfStep();
 		let placesToMove = [];
 		let enemyDisc = [];
+		let indexOfEnemy = [];
 
 		for (let j = 1; j <= 2; j++) {
 			if (index[0][j] === undefined) {
@@ -149,7 +150,7 @@ const isSquareEmpty = (square) => {
 };
 
 const squareIsOccupiedByEnemy = (square, enemyColor) => {
-	if (!square) {
+	if (!square.children.item(0)) {
 		return false;
 	}
 	return square.children.item(0).classList.contains('disc--' + enemyColor);
@@ -196,6 +197,53 @@ function chooseDiscToMove(e) {
 	showPossibleMoves(e);
 }
 
+function isEnemy(enemyElement) {
+	if (!enemyElement) {
+		return false;
+	}
+
+	return enemyElement.firstElementChild.classList.contains(
+		'disc--' + dragged.enemyColor
+	);
+}
+
+function isTwoRowDifference(startRow) {
+	const stopRow = dragged.getRowNumber();
+
+	return (
+		parseInt(startRow) === parseInt(stopRow) + 2 ||
+		parseInt(startRow) === parseInt(stopRow) - 2
+	);
+}
+
+function captureEnemyDisc(start, enemyDisc) {
+	const startRow = start.parentElement.firstElementChild.textContent;
+	const stopColumn = dragged.getColNumber();
+
+	if (isTwoRowDifference(startRow)) {
+		let enemyElement = null;
+		let i = 0;
+
+		while (i < enemyDisc.length) {
+			if (
+				enemyDisc[i + 1] === parseInt(startRow) + 1 ||
+				enemyDisc[i + 1] === parseInt(startRow) - 1
+			) {
+				if (enemyDisc[i + 2] === parseInt(stopColumn) - 1) {
+					enemyElement = enemyDisc[i];
+				} else if (enemyDisc[i + 2] === parseInt(stopColumn) + 1) {
+					enemyElement = enemyDisc[i];
+				}
+			}
+			i = i + 3;
+		}
+		console.log(enemyElement);
+		if (isEnemy(enemyElement)) {
+			enemyElement.removeChild(enemyElement.firstElementChild);
+		}
+	}
+}
+
 function moveDisc(e) {
 	if (e.target.classList.contains('disc')) {
 		return false;
@@ -205,54 +253,20 @@ function moveDisc(e) {
 		return false;
 	}
 	removePossibleMoves();
+
 	const start = startSquare.parentElement;
 	const indexes = dragged.findNextStep();
 
 	if (!indexes.placesToMove) {
-		removePossibleMoves();
 		return false;
 	}
 
 	if (indexes.placesToMove.includes(target)) {
 		dragged.HTMLelement.parentNode.removeChild(dragged.HTMLelement);
 		target.appendChild(dragged.HTMLelement);
-	}
-
-	const startRow = start.parentElement.firstElementChild.textContent;
-	const movedRow = dragged.getRowNumber();
-	const movedColumn = dragged.getColNumber();
-
-	//zbijanie
-	if (
-		parseInt(startRow) === parseInt(movedRow) + 2 ||
-		parseInt(startRow) === parseInt(movedRow) - 2
-	) {
-		let enemyElement = null;
-
-		let i = 0;
-		while (i < indexes.enemyDisc.length) {
-			if (indexes.enemyDisc[i + 1] === parseInt(startRow) + 1 || indexes.enemyDisc[i + 1] === parseInt(startRow) - 1) {
-				if (indexes.enemyDisc[i + 2] === parseInt(movedColumn) - 1) {
-					enemyElement = indexes.enemyDisc[i];
-				} else if (indexes.enemyDisc[i + 2] === parseInt(movedColumn) + 1) {
-					enemyElement = indexes.enemyDisc[i];
-				}
-			}
-			i = i + 3;
-		}
-		console.log(enemyElement);
-		if (
-			enemyElement &&
-			enemyElement.firstElementChild.classList.contains(
-				'disc--' + dragged.enemyColor
-			)
-		) {
-			enemyElement.removeChild(enemyElement.firstElementChild);
-		}
+		captureEnemyDisc(start, indexes.enemyDisc);
 	}
 }
-
-function captureEnemyDisc(e) {}
 
 discs.forEach((disc) => {
 	//disc.addEventListener('dragstart', chooseDiscToMove);
