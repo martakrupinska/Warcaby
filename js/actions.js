@@ -1,5 +1,7 @@
 import { createHint } from './script.js';
 const boardPieces = 8;
+const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
+const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
 let dragged;
 let startSquare;
 
@@ -21,6 +23,34 @@ class Discs {
 		return parseInt(col.indexOf(this.HTMLelement.parentElement));
 	}
 
+	getSteps() {
+		const col_min = [];
+		const col_max = [];
+		const maxColNumber = this.findMaxColumnNumber();
+		const colNumber = this.getColNumber();
+		const rowNumber = this.getRowNumber();
+
+		let j = 1;
+		while (j < maxColNumber) {
+			if (j < colNumber) {
+				col_min.push(colNumber - j);
+			} else if (j > colNumber) {
+				col_max.push(colNumber + (j - colNumber));
+			}
+
+			j++;
+		}
+
+		for (let f = 0; f <= rowRow.length; f++) {
+			if (rowRow[f] < rowNumber) {
+				col_min.unshift(colNumber - rowRow[f]);
+				col_max.unshift(colNumber + rowRow[f]);
+			}
+		}
+		console.log(col_min);
+		return [col_min, col_max];
+	}
+
 	findMaxColumnNumber() {
 		return boardPieces + 1;
 	}
@@ -28,13 +58,15 @@ class Discs {
 		const col_min = [];
 		const col_max = [];
 		const maxColNumber = this.findMaxColumnNumber();
+		const colNumber = this.getColNumber();
+		const rowNumber = this.getRowNumber();
 
 		let j = 1;
 		while (j < maxColNumber) {
-			if (j < this.getColNumber()) {
-				col_min.push(this.getColNumber() - j);
-			} else if (j > this.getColNumber()) {
-				col_max.push(this.getColNumber() + (j - this.getColNumber()));
+			if (j < colNumber) {
+				col_min.push(colNumber - j);
+			} else if (j > colNumber) {
+				col_max.push(colNumber + (j - colNumber));
 			}
 
 			j++;
@@ -44,11 +76,15 @@ class Discs {
 
 	findIndexesOfStep() {
 		const indexes = [];
-		const row = this.findRowIndexes();
-		const col_min = this.findColumnIndexes()[0];
-		const col_max = this.findColumnIndexes()[1];
+		const row = [1, 2, 3, 4, 5, 6, 7, 8]; //this.findRowIndexes();
+		const col_min = this.getSteps()[0];
+		const col_max = this.getSteps()[1];
+		//const col_min = this.findColumnIndexes()[0];
+		//	const col_max = this.findColumnIndexes()[1];
+		//console.log(col_min);
+		row.splice(this.getRowNumber() - 1, 1);
 
-		for (let g = 0; g < this.findMaxRowNumber(); g++) {
+		for (let g = 0; g < boardPieces - 1; g++) {
 			indexes[g] = [row[g], col_min[g], col_max[g]];
 		}
 		return indexes;
@@ -61,10 +97,11 @@ class Discs {
 		let indexOfEnemy = [];
 
 		for (let j = 1; j <= 2; j++) {
-			if (index[0][j] === undefined) {
+						if (index[0][j] === undefined) {
 				continue;
 			}
 			const oneStep = getBoardElement(index[0][0], index[0][j]);
+			console.log(oneStep)
 			if (isSquareEmpty(oneStep)) {
 				placesToMove.push(oneStep);
 			} else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
