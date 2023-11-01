@@ -47,7 +47,6 @@ class Discs {
 				col_max.unshift(colNumber + rowRow[f]);
 			}
 		}
-		console.log(col_min);
 		return [col_min, col_max];
 	}
 
@@ -79,9 +78,7 @@ class Discs {
 		const row = [1, 2, 3, 4, 5, 6, 7, 8]; //this.findRowIndexes();
 		const col_min = this.getSteps()[0];
 		const col_max = this.getSteps()[1];
-		//const col_min = this.findColumnIndexes()[0];
-		//	const col_max = this.findColumnIndexes()[1];
-		//console.log(col_min);
+
 		row.splice(this.getRowNumber() - 1, 1);
 
 		for (let g = 0; g < boardPieces - 1; g++) {
@@ -95,17 +92,85 @@ class Discs {
 		let placesToMove = [];
 		let enemyDisc = [];
 		let indexOfEnemy = [];
+		const row = this.getRowNumber();
+		let firstStep = [];
 
 		for (let j = 1; j <= 2; j++) {
-						if (index[0][j] === undefined) {
-				continue;
+			/* 	if (index[row][j] === undefined) {
+					continue;
+				} */
+
+			firstStep.push(getBoardElement(index[row - 2][0], index[row - 2][j]));
+			firstStep.push(getBoardElement(index[row - 1][0], index[row - 1][j]));
+		}
+		console.log(index);
+		const newStepMap = firstStep.map((square) => {
+			if (isSquareEmpty(square)) {
+				placesToMove.push(square);
+			} else if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
+				console.log(square);
+
+				const indexOfFirstStep = firstStep.indexOf(square);
+				let rowFirstOfStep;
+				if (indexOfFirstStep === 1 || indexOfFirstStep === 3) {
+					rowFirstOfStep = this.getRowNumber() + (row - 1);
+				} else {
+					rowFirstOfStep = this.getRowNumber() + (row - 2);
+				}
+				let colFirstOfStep;
+				if (indexOfFirstStep === 0 || indexOfFirstStep === 1) {
+					colFirstOfStep = 1;
+				} else {
+					colFirstOfStep = 2;
+				}
+
+				enemyDisc.push(
+					square,
+					index[rowFirstOfStep - 2][0],
+					index[rowFirstOfStep - 2][colFirstOfStep]
+				);
+				console.log(enemyDisc);
+
+				for (let i = 1; i < index.length; i++) {
+					if (index[i][colFirstOfStep] === undefined) {
+						break;
+					}
+					let steps = getBoardElement(index[i][0], index[i][colFirstOfStep]);
+					if (isSquareEmpty(steps)) {
+						placesToMove.push(steps);
+						break;
+					}
+				}
 			}
-			const oneStep = getBoardElement(index[0][0], index[0][j]);
-			console.log(oneStep)
+		});
+
+		/* const oneStep = getBoardElement(index[row][0], index[row][j]);
+			console.log(oneStep);
+
 			if (isSquareEmpty(oneStep)) {
 				placesToMove.push(oneStep);
-			} else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
-				enemyDisc.push(oneStep, index[0][0], index[0][j]);
+			}
+			for (let i = row + 1; i <= index.length + 1; i++) {
+				if (index[i][j] === undefined) {
+					break;
+				}
+				//	console.log(i, index);
+			} */
+
+		/* for (let i = row; i < index.length - row; i--) {
+				if (index[i][j] === undefined) {
+					break;
+				}
+
+				//	console.log(i);
+			} */
+
+		/* else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
+				enemyDisc.push(
+					oneStep,
+					index[this.getRowNumber() - 1][0],
+					index[this.getRowNumber() - 1][j]
+				);
 				for (let i = 1; i < index.length; i++) {
 					if (index[i][j] === undefined) {
 						break;
@@ -116,8 +181,8 @@ class Discs {
 						break;
 					}
 				}
-			}
-		}
+			} */
+		//}
 		return { placesToMove: placesToMove, enemyDisc: enemyDisc };
 	}
 	createNextStep() {
