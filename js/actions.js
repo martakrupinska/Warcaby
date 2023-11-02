@@ -1,226 +1,10 @@
-import { createHint } from './script.js';
+import { createHint, getBoardElement } from './script.js';
+import { Discs, White, Black } from './object.js';
 const boardPieces = 8;
 const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
 const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
 let dragged;
 let startSquare;
-
-class Discs {
-	constructor(HTMLelement) {
-		this.HTMLelement = HTMLelement;
-	}
-
-	getRowNumber() {
-		const row = this.HTMLelement.closest('tr');
-		const rowNumber = row.childNodes[1].textContent;
-
-		return parseInt(rowNumber);
-	}
-	getColNumber() {
-		const row = this.HTMLelement.closest('tr');
-		const col = Array.prototype.slice.call(row.querySelectorAll('td'));
-
-		return parseInt(col.indexOf(this.HTMLelement.parentElement));
-	}
-
-	getSteps() {
-		const col_min = [];
-		const col_max = [];
-		const maxColNumber = this.findMaxColumnNumber();
-		const colNumber = this.getColNumber();
-		const rowNumber = this.getRowNumber();
-
-		let j = 1;
-		while (j < maxColNumber) {
-			if (j < colNumber) {
-				col_min.push(colNumber - j);
-			} else if (j > colNumber) {
-				col_max.push(colNumber + (j - colNumber));
-			}
-
-			j++;
-		}
-
-		for (let f = 0; f <= rowRow.length; f++) {
-			if (rowRow[f] < rowNumber) {
-				col_min.unshift(colNumber - rowRow[f]);
-				col_max.unshift(colNumber + rowRow[f]);
-			}
-		}
-		return [col_min, col_max];
-	}
-
-	findMaxColumnNumber() {
-		return boardPieces + 1;
-	}
-	findColumnIndexes() {
-		const col_min = [];
-		const col_max = [];
-		const maxColNumber = this.findMaxColumnNumber();
-		const colNumber = this.getColNumber();
-		const rowNumber = this.getRowNumber();
-
-		let j = 1;
-		while (j < maxColNumber) {
-			if (j < colNumber) {
-				col_min.push(colNumber - j);
-			} else if (j > colNumber) {
-				col_max.push(colNumber + (j - colNumber));
-			}
-
-			j++;
-		}
-		return [col_min, col_max];
-	}
-
-	findIndexesOfStep() {
-		const indexes = [];
-		const row = [1, 2, 3, 4, 5, 6, 7, 8]; //this.findRowIndexes();
-		const col_min = this.getSteps()[0];
-		const col_max = this.getSteps()[1];
-
-		row.splice(this.getRowNumber() - 1, 1);
-
-		for (let g = 0; g < boardPieces - 1; g++) {
-			indexes[g] = [row[g], col_min[g], col_max[g]];
-		}
-		return indexes;
-	}
-
-	findNextStep() {
-		const index = this.findIndexesOfStep();
-		let placesToMove = [];
-		let enemyDisc = [];
-		let indexOfEnemy = [];
-		const row = this.getRowNumber();
-		let firstStep = [];
-
-		for (let j = 1; j <= 2; j++) {
-			/* 	if (index[row][j] === undefined) {
-					continue;
-				} */
-
-			if (index[row - 2][0] && index[row - 2][j]) {
-				firstStep.push(getBoardElement(index[row - 2][0], index[row - 2][j]));
-			}
-			if (index[row - 1][0] && index[row - 1][j]) {
-				firstStep.push(getBoardElement(index[row - 1][0], index[row - 1][j]));
-			}
-		}
-		console.log(firstStep);
-
-		const newStepMap = firstStep.map((square) => {
-			if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
-
-				const indexOfFirstStep = firstStep.indexOf(square);
-				let rowFirstOfStep;
-				if (indexOfFirstStep === 1 || indexOfFirstStep === 3) {
-					rowFirstOfStep = row - 1;
-				} else {
-					rowFirstOfStep = row - 2;
-				}
-				let colFirstOfStep;
-				if (indexOfFirstStep === 0 || indexOfFirstStep === 1) {
-					colFirstOfStep = 1;
-				} else {
-					colFirstOfStep = 2;
-				}
-
-				enemyDisc.push(
-					square,
-					index[rowFirstOfStep][0],
-					index[rowFirstOfStep][colFirstOfStep]
-				);
-
-				for (let i = 1; i < index.length; i++) {
-					if (index[i][colFirstOfStep] === undefined) {
-						break;
-					}
-					let steps = getBoardElement(index[i][0], index[i][colFirstOfStep]);
-					if (isSquareEmpty(steps)) {
-						placesToMove.push(steps);
-						return steps;
-					}
-				}
-			}
-		});
-
-		const newNew = newStepMap.filter((step) => {
-			if (step !== 'undefined' || step !== '') return step;
-		});
-		console.log(newNew);
-
-
-		if (!newNew.length) {
-			firstStep.forEach((step) => {
-				if (isSquareEmpty(step)) {
-					placesToMove.push(step);
-					console.log(step);
-				}
-			});
-		}
-
-		
-		return { placesToMove: placesToMove, enemyDisc: enemyDisc };
-	}
-	createNextStep() {
-		const steps = this.findNextStep();
-
-		steps.placesToMove.forEach((step) => {
-			createHint(step);
-		});
-	}
-}
-
-class White extends Discs {
-	constructor(HTMLelement) {
-		super(HTMLelement), (this.color = 'white');
-		this.enemyColor = 'black';
-	}
-
-	findMaxRowNumber() {
-		return boardPieces - this.getRowNumber();
-	}
-	findRowIndexes() {
-		let i = 1;
-		const row = [];
-
-		while (i <= this.findMaxRowNumber()) {
-			row.push(this.getRowNumber() + i);
-			i++;
-		}
-		return row;
-	}
-}
-class Black extends Discs {
-	constructor(HTMLelement) {
-		super(HTMLelement), (this.color = 'black');
-		this.enemyColor = 'white';
-	}
-	findMaxRowNumber() {
-		return boardPieces - (boardPieces - this.getRowNumber() + 1);
-	}
-	findRowIndexes() {
-		let i = 1;
-		const row = [];
-
-		while (i <= this.findMaxRowNumber()) {
-			row.push(this.getRowNumber() - i);
-			i++;
-		}
-		return row;
-	}
-}
-
-function getBoardElement(row, col) {
-	const allColumn = document.querySelectorAll('tr .board__square');
-	const index = (row - 1) * boardPieces + (col - 1);
-
-	if (allColumn[index].classList.contains('board__square--dark')) {
-		return allColumn[index];
-	}
-	return allColumn[index];
-}
 
 const isSquareEmpty = (square) => {
 	if (!square) {
@@ -256,10 +40,18 @@ function createObjectDisc(e) {
 	return disc;
 }
 
+function createNextStep(disc) {
+	const steps = disc.findNextStep();
+
+	steps.placesToMove.forEach((step) => {
+		createHint(step);
+	});
+}
+
 function showPossibleMoves(e) {
 	const disc = createObjectDisc(e);
 	if (disc) {
-		disc.createNextStep();
+		createNextStep(disc);
 	}
 }
 
@@ -358,3 +150,5 @@ darkSquares.forEach((square) => {
 	//	square.addEventListener('dragover', changeStateOfDisc);
 	//square.addEventListener('drop', moveDisc);
 });
+
+export { isSquareEmpty, squareIsOccupiedByEnemy };

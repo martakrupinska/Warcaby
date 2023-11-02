@@ -1,4 +1,5 @@
-let numberOfDiscs = 12;
+const numberOfDiscs = 12;
+const boardPieces = 8;
 let editBtnGamerElement;
 let popup;
 
@@ -28,6 +29,16 @@ function createHint(parent) {
 }
 
 setPiecesOnBoard();
+
+function getBoardElement(row, col) {
+	const allColumn = document.querySelectorAll('tr .board__square');
+	const index = (row - 1) * boardPieces + (col - 1);
+
+	if (allColumn[index].classList.contains('board__square--dark')) {
+		return allColumn[index];
+	}
+	return allColumn[index];
+}
 
 const editBtns = document.querySelectorAll('.gamer__button--edit');
 
@@ -83,4 +94,4 @@ editBtns.forEach((btn) => {
 	btn.addEventListener('click', showPopUpWithUserName);
 });
 
-export { createHint };
+export { createHint, getBoardElement };
