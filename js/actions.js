@@ -100,22 +100,24 @@ class Discs {
 					continue;
 				} */
 
-			firstStep.push(getBoardElement(index[row - 2][0], index[row - 2][j]));
-			firstStep.push(getBoardElement(index[row - 1][0], index[row - 1][j]));
+			if (index[row - 2][0] && index[row - 2][j]) {
+				firstStep.push(getBoardElement(index[row - 2][0], index[row - 2][j]));
+			}
+			if (index[row - 1][0] && index[row - 1][j]) {
+				firstStep.push(getBoardElement(index[row - 1][0], index[row - 1][j]));
+			}
 		}
-		console.log(index);
+		console.log(firstStep);
+
 		const newStepMap = firstStep.map((square) => {
-			if (isSquareEmpty(square)) {
-				placesToMove.push(square);
-			} else if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
-				console.log(square);
+			if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
 
 				const indexOfFirstStep = firstStep.indexOf(square);
 				let rowFirstOfStep;
 				if (indexOfFirstStep === 1 || indexOfFirstStep === 3) {
-					rowFirstOfStep = this.getRowNumber() + (row - 1);
+					rowFirstOfStep = row - 1;
 				} else {
-					rowFirstOfStep = this.getRowNumber() + (row - 2);
+					rowFirstOfStep = row - 2;
 				}
 				let colFirstOfStep;
 				if (indexOfFirstStep === 0 || indexOfFirstStep === 1) {
@@ -126,10 +128,9 @@ class Discs {
 
 				enemyDisc.push(
 					square,
-					index[rowFirstOfStep - 2][0],
-					index[rowFirstOfStep - 2][colFirstOfStep]
+					index[rowFirstOfStep][0],
+					index[rowFirstOfStep][colFirstOfStep]
 				);
-				console.log(enemyDisc);
 
 				for (let i = 1; i < index.length; i++) {
 					if (index[i][colFirstOfStep] === undefined) {
@@ -138,51 +139,28 @@ class Discs {
 					let steps = getBoardElement(index[i][0], index[i][colFirstOfStep]);
 					if (isSquareEmpty(steps)) {
 						placesToMove.push(steps);
-						break;
+						return steps;
 					}
 				}
 			}
 		});
 
-		/* const oneStep = getBoardElement(index[row][0], index[row][j]);
-			console.log(oneStep);
+		const newNew = newStepMap.filter((step) => {
+			if (step !== 'undefined' || step !== '') return step;
+		});
+		console.log(newNew);
 
-			if (isSquareEmpty(oneStep)) {
-				placesToMove.push(oneStep);
-			}
-			for (let i = row + 1; i <= index.length + 1; i++) {
-				if (index[i][j] === undefined) {
-					break;
+
+		if (!newNew.length) {
+			firstStep.forEach((step) => {
+				if (isSquareEmpty(step)) {
+					placesToMove.push(step);
+					console.log(step);
 				}
-				//	console.log(i, index);
-			} */
+			});
+		}
 
-		/* for (let i = row; i < index.length - row; i--) {
-				if (index[i][j] === undefined) {
-					break;
-				}
-
-				//	console.log(i);
-			} */
-
-		/* else if (squareIsOccupiedByEnemy(oneStep, this.enemyColor)) {
-				enemyDisc.push(
-					oneStep,
-					index[this.getRowNumber() - 1][0],
-					index[this.getRowNumber() - 1][j]
-				);
-				for (let i = 1; i < index.length; i++) {
-					if (index[i][j] === undefined) {
-						break;
-					}
-					let steps = getBoardElement(index[i][0], index[i][j]);
-					if (isSquareEmpty(steps)) {
-						placesToMove.push(steps);
-						break;
-					}
-				}
-			} */
-		//}
+		
 		return { placesToMove: placesToMove, enemyDisc: enemyDisc };
 	}
 	createNextStep() {
