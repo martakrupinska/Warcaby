@@ -78,6 +78,7 @@ class Discs {
 		const columnNumber = this.getQuantityOfColumnFromIndexesTable();
 		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
+		let indexOfFirsSteps = [];
 
 		for (let j = 1; j <= columnNumber; j++) {
 			if (index[rowNumber.stepBack][0] && index[rowNumber.stepBack][j]) {
@@ -87,6 +88,10 @@ class Discs {
 						index[rowNumber.stepBack][j]
 					)
 				);
+				indexOfFirsSteps.push([
+					index[rowNumber.stepBack][0],
+					index[rowNumber.stepBack][j],
+				]);
 			}
 			if (index[rowNumber.forward][0] && index[rowNumber.forward][j]) {
 				firstStep.push(
@@ -95,71 +100,25 @@ class Discs {
 						index[rowNumber.forward][j]
 					)
 				);
+				indexOfFirsSteps.push([
+					index[rowNumber.forward][0],
+					index[rowNumber.forward][j],
+				]);
 			}
 		}
-		return firstStep;
+		return [firstStep, indexOfFirsSteps];
 	}
 
-	findNextStep() {
-		const index = this.getIndexesOfStep();
-		let placesToMove = [];
-		let enemyDisc = [];
-		const row = this.getRowNumber();
+	getColId(row, col) {
+		const indexes = this.getIndexesOfStep();
+		let columnId;
 
-		const firstSteps = this.getFirstStep();
-
-		const newStepMap = firstSteps.map((square) => {
-			if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
-				const indexOfFirstStep = firstSteps.indexOf(square);
-
-				let rowFirstOfStep;
-				if (indexOfFirstStep === 1 || indexOfFirstStep === 3) {
-					rowFirstOfStep = row + 1;
-				} else {
-					rowFirstOfStep = row - 1;
-				}
-				let colFirstOfStep;
-				if (indexOfFirstStep === 0 || indexOfFirstStep === 1) {
-					colFirstOfStep = 1;
-				} else {
-					colFirstOfStep = 2;
-				}
-
-				let steps = getBoardElement(
-					index[rowFirstOfStep + 1][0],
-					index[rowFirstOfStep + 1][colFirstOfStep]
-				);
-
-				if (isSquareEmpty(steps)) {
-					placesToMove.push(steps);
-					enemyDisc.push(
-						square,
-						index[rowFirstOfStep][0],
-						index[rowFirstOfStep][colFirstOfStep]
-					);
-
-					return steps;
-				}
+		indexes.forEach((x) => {
+			if (x[0] === row) {
+				columnId = x.indexOf(col);
 			}
 		});
-		const newNew = newStepMap.filter((step) => {
-			if (step !== 'undefined' || step !== '') {
-				return step;
-			}
-		});
-
-		let forwardStep = this.getForwardSteps(firstStep);
-
-		if (!newNew.length) {
-			forwardStep.forEach((step) => {
-				if (isSquareEmpty(step)) {
-					console.log(step);
-					placesToMove.push(step);
-				}
-			});
-		}
-
-		return { placesToMove: placesToMove, enemyDisc: enemyDisc };
+		return columnId;
 	}
 }
 

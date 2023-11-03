@@ -41,7 +41,7 @@ function createObjectDisc(e) {
 }
 
 function createNextStep(disc) {
-	const steps = disc.findNextStep();
+	const steps = findNextStep(disc);
 
 	steps.placesToMove.forEach((step) => {
 		createHint(step);
@@ -126,7 +126,7 @@ function moveDisc(e) {
 	removePossibleMoves();
 
 	const start = startSquare.parentElement;
-	const indexes = dragged.findNextStep();
+	const indexes = findNextStep(dragged);
 
 	if (!indexes.placesToMove) {
 		return false;
@@ -139,6 +139,84 @@ function moveDisc(e) {
 	}
 }
 
+/* */
+const getIndexes = (disc, rowNumber, colId) => {
+	const index = disc.getIndexesOfStep();
+	return [index[rowNumber][0], index[rowNumber][colId]];
+};
+
+const getIndexesOfFirstStep = (disc, square) => {
+	const steps = disc.getFirstStep();
+
+	const indexes = steps[0].indexOf(square);
+	const rowNumber = steps[1][indexes][0];
+	const colNumber = disc.getColId(rowNumber, steps[1][indexes][1]);
+	return { row: rowNumber, columnId: colNumber };
+};
+
+function findStepsToCaptureEnemyDisc(square, disc) {
+	let enemyDisc = [];
+
+	const firstStepsIndexes = getIndexesOfFirstStep(disc, square);
+
+	const steps = getBoardElement(
+		...getIndexes(disc, firstStepsIndexes.row + 1, firstStepsIndexes.columnId)
+	);
+
+	if (isSquareEmpty(steps)) {
+		enemyDisc.push(square, [
+			...getIndexes(disc, firstStepsIndexes.row, firstStepsIndexes.columnId),
+		]);
+
+		return { steps: steps, enemyDisc: enemyDisc };
+	}
+}
+
+const getTableWithoudUndefindElement = (table) => {
+	const elements = table.filter((element) => {
+		if (element !== 'undefined' || element !== '') {
+			return element;
+		}
+	});
+	return elements;
+};
+
+function findNextStep(disc) {
+	let placesToMove = [];
+	let enemyDisc = [];
+
+	const firstSteps = disc.getFirstStep();
+	console.log(firstSteps);
+
+	const nextStepToCaptureDiscs = firstSteps[0].map((square) => {
+		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
+			const steps = findStepsToCaptureEnemyDisc(square, disc);
+			placesToMove.push(steps.steps);
+			enemyDisc.push(steps.enemyDisc);
+			return steps.steps;
+		}
+	});
+
+	let forwardStep = dragged.getForwardSteps(firstSteps[0]);
+
+	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
+		nextStepToCaptureDiscs
+	);
+
+	if (!stepsWithoutCaptureDisc.length) {
+		forwardStep.forEach((step) => {
+			if (isSquareEmpty(step)) {
+				placesToMove.push(step);
+			}
+		});
+	}
+	/* do poprawy w innym miejscu..*/
+	enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
+
+	return { placesToMove: placesToMove, enemyDisc: enemyDisc };
+}
+
+/* */
 discs.forEach((disc) => {
 	//disc.addEventListener('dragstart', chooseDiscToMove);
 	disc.addEventListener('click', chooseDiscToMove);
