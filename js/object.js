@@ -1,5 +1,4 @@
 import { getBoardElement } from './script.js';
-import { isSquareEmpty, squareIsOccupiedByEnemy } from './actions.js';
 const boardPieces = 8;
 const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
 const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -22,59 +21,56 @@ class Discs {
 		return parseInt(col.indexOf(this.HTMLelement.parentElement));
 	}
 
-	getSteps() {
-		const col_min = [];
-		const col_max = [];
+	getColumnToMoveIsPossible() {
+		const col_left = [];
+		const col_right = [];
 		const colNumber = this.getColNumber();
 		const rowNumber = this.getRowNumber();
 
 		let j = 1;
-		while (j < this.getMaxColumnNumber()) {
+		while (j < boardPieces + 1) {
 			if (j < colNumber) {
-				col_min.push(colNumber - j);
+				col_left.push(colNumber - j);
 			} else if (j > colNumber) {
-				col_max.push(colNumber + (j - colNumber));
+				col_right.push(colNumber + (j - colNumber));
 			}
 
 			j++;
 		}
 
-		col_min.unshift(undefined);
-		col_max.unshift(undefined);
+		col_left.unshift(undefined);
+		col_right.unshift(undefined);
 
 		for (let f = 0; f <= rowRow.length; f++) {
 			if (rowRow[f] < rowNumber) {
-				col_min.unshift(colNumber - rowRow[f]);
-				col_max.unshift(colNumber + rowRow[f]);
+				col_left.unshift(colNumber - rowRow[f]);
+				col_right.unshift(colNumber + rowRow[f]);
 			}
 		}
-		return [col_min, col_max];
+
+		return [col_left, col_right];
 	}
 
-	getMaxColumnNumber() {
-		return boardPieces + 1;
-	}
-
-	getIndexesOfStep() {
+	getIndexesOfPossibleSteps() {
 		let indexes = [];
-		const col_min = this.getSteps()[0];
-		const col_max = this.getSteps()[1];
+		const col_left = this.getColumnToMoveIsPossible()[0];
+		const col_right = this.getColumnToMoveIsPossible()[1];
 
 		for (let g = 1; g <= boardPieces; g++) {
-			indexes[g] = [rowRow[g - 1], col_min[g - 1], col_max[g - 1]];
+			indexes[g] = [rowRow[g - 1], col_left[g - 1], col_right[g - 1]];
 		}
 		return indexes;
 	}
 
 	getQuantityOfColumnFromIndexesTable() {
-		const index = this.getIndexesOfStep();
+		const index = this.getIndexesOfPossibleSteps();
 		if (index.length > 0) {
 			return parseInt(index[1].length) - 1;
 		}
 	}
 
-	getFirstStep() {
-		const index = this.getIndexesOfStep();
+	getFirstSteps() {
+		const index = this.getIndexesOfPossibleSteps();
 		const columnNumber = this.getQuantityOfColumnFromIndexesTable();
 		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
@@ -110,7 +106,7 @@ class Discs {
 	}
 
 	getColId(row, col) {
-		const indexes = this.getIndexesOfStep();
+		const indexes = this.getIndexesOfPossibleSteps();
 		let columnId;
 
 		indexes.forEach((x) => {
@@ -145,20 +141,6 @@ class White extends Discs {
 		console.log(forward, back);
 		return { forward: forward, stepBack: back };
 	}
-
-	/* 	findMaxRowNumber() {
-		return boardPieces - this.getRowNumber();
-	}
-	findRowIndexes() {
-		let i = 1;
-		const row = [];
-
-		while (i <= this.findMaxRowNumber()) {
-			row.push(this.getRowNumber() + i);
-			i++;
-		}
-		return row;
-	} */
 }
 class Black extends Discs {
 	constructor(HTMLelement) {
@@ -166,7 +148,7 @@ class Black extends Discs {
 		this.enemyColor = 'white';
 	}
 	getForwardSteps(step) {
-		return [step[0], step[2]];
+		return [step[1], step[3]];
 	}
 
 	getForwardAndStepBackRowNumberToStep() {
@@ -182,20 +164,6 @@ class Black extends Discs {
 		}
 		return { forward: forward, stepBack: back };
 	}
-
-	/* 	findMaxRowNumber() {
-		return boardPieces - (boardPieces - this.getRowNumber() + 1);
-	}
-	findRowIndexes() {
-		let i = 1;
-		const row = [];
-
-		while (i <= this.findMaxRowNumber()) {
-			row.push(this.getRowNumber() - i);
-			i++;
-		}
-		return row;
-	} */
 }
 
 export { Discs, White, Black };

@@ -1,10 +1,11 @@
 import { createHint, getBoardElement } from './script.js';
 import { Discs, White, Black } from './object.js';
-const boardPieces = 8;
-const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
-const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
-let dragged;
+
+let movedDisc;
 let startSquare;
+
+const discs = document.querySelectorAll('.disc');
+const darkSquares = document.querySelectorAll('.board__square--dark');
 
 const isSquareEmpty = (square) => {
 	if (!square) {
@@ -20,9 +21,6 @@ const squareIsOccupiedByEnemy = (square, enemyColor) => {
 	return square.children.item(0).classList.contains('disc--' + enemyColor);
 };
 
-const discs = document.querySelectorAll('.disc');
-const darkSquares = document.querySelectorAll('.board__square--dark');
-
 function createObjectDisc(e) {
 	let disc;
 	const activeDisc = e.target;
@@ -36,22 +34,18 @@ function createObjectDisc(e) {
 	} else if (activeDisc.classList.contains('disc--black')) {
 		disc = new Black(activeDisc);
 	}
-
 	return disc;
-}
-
-function createNextStep(disc) {
-	const steps = findNextStep(disc);
-
-	steps.placesToMove.forEach((step) => {
-		createHint(step);
-	});
 }
 
 function showPossibleMoves(e) {
 	const disc = createObjectDisc(e);
+
 	if (disc) {
-		createNextStep(disc);
+		const steps = findNextStep(disc);
+
+		steps.placesToMove.forEach((step) => {
+			createHint(step);
+		});
 	}
 }
 
@@ -64,7 +58,7 @@ function removePossibleMoves() {
 
 function chooseDiscToMove(e) {
 	removePossibleMoves();
-	dragged = createObjectDisc(e);
+	movedDisc = createObjectDisc(e);
 	startSquare = e.target;
 	showPossibleMoves(e);
 }
@@ -73,14 +67,13 @@ function isEnemy(enemyElement) {
 	if (!enemyElement) {
 		return false;
 	}
-
 	return enemyElement.firstElementChild.classList.contains(
-		'disc--' + dragged.enemyColor
+		'disc--' + movedDisc.enemyColor
 	);
 }
 
 function isTwoRowDifference(startRow) {
-	const stopRow = dragged.getRowNumber();
+	const stopRow = movedDisc.getRowNumber();
 
 	return (
 		parseInt(startRow) === parseInt(stopRow) + 2 ||
@@ -90,7 +83,7 @@ function isTwoRowDifference(startRow) {
 
 function captureEnemyDisc(start, enemyDisc) {
 	const startRow = start.parentElement.firstElementChild.textContent;
-	const stopColumn = dragged.getColNumber();
+	const stopColumn = movedDisc.getColNumber();
 
 	if (isTwoRowDifference(startRow)) {
 		let enemyElement = null;
@@ -126,27 +119,27 @@ function moveDisc(e) {
 	removePossibleMoves();
 
 	const start = startSquare.parentElement;
-	const indexes = findNextStep(dragged);
+	const indexes = findNextStep(movedDisc);
 
 	if (!indexes.placesToMove) {
 		return false;
 	}
 
 	if (indexes.placesToMove.includes(target)) {
-		dragged.HTMLelement.parentNode.removeChild(dragged.HTMLelement);
-		target.appendChild(dragged.HTMLelement);
+		movedDisc.HTMLelement.parentNode.removeChild(movedDisc.HTMLelement);
+		target.appendChild(movedDisc.HTMLelement);
 		captureEnemyDisc(start, indexes.enemyDisc);
 	}
 }
 
 /* */
 const getIndexes = (disc, rowNumber, colId) => {
-	const index = disc.getIndexesOfStep();
+	const index = disc.getIndexesOfPossibleSteps();
 	return [index[rowNumber][0], index[rowNumber][colId]];
 };
 
 const getIndexesOfFirstStep = (disc, square) => {
-	const steps = disc.getFirstStep();
+	const steps = disc.getFirstSteps();
 
 	const indexes = steps[0].indexOf(square);
 	const rowNumber = steps[1][indexes][0];
@@ -157,18 +150,20 @@ const getIndexesOfFirstStep = (disc, square) => {
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
 
-	const firstStepsIndexes = getIndexesOfFirstStep(disc, square);
+	const indexes = getIndexesOfFirstStep(disc, square);
 
-	const steps = getBoardElement(
-		...getIndexes(disc, firstStepsIndexes.row + 1, firstStepsIndexes.columnId)
+	//console.log(disc.getForwardAndStepBackRowNumberToStep().forward, indexes.row);
+	/* do poprawy - nie działa dla czarnych, bo jest row + 1 */
+	const element = getBoardElement(
+		...getIndexes(disc, indexes.row + 1, indexes.columnId)
 	);
 
-	if (isSquareEmpty(steps)) {
+	if (isSquareEmpty(element)) {
 		enemyDisc.push(square, [
-			...getIndexes(disc, firstStepsIndexes.row, firstStepsIndexes.columnId),
+			...getIndexes(disc, indexes.row, indexes.columnId),
 		]);
 
-		return { steps: steps, enemyDisc: enemyDisc };
+		return { element: element, enemyDisc: enemyDisc };
 	}
 }
 
@@ -185,19 +180,19 @@ function findNextStep(disc) {
 	let placesToMove = [];
 	let enemyDisc = [];
 
-	const firstSteps = disc.getFirstStep();
-	console.log(firstSteps);
+	const firstSteps = disc.getFirstSteps();
 
 	const nextStepToCaptureDiscs = firstSteps[0].map((square) => {
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
-			placesToMove.push(steps.steps);
+			/* do poprawy jak nie ma kroku - wywala błąd */
+			placesToMove.push(steps.element);
 			enemyDisc.push(steps.enemyDisc);
-			return steps.steps;
+			return steps.element;
 		}
 	});
 
-	let forwardStep = dragged.getForwardSteps(firstSteps[0]);
+	let forwardStep = movedDisc.getForwardSteps(firstSteps[0]);
 
 	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
 		nextStepToCaptureDiscs
@@ -211,21 +206,18 @@ function findNextStep(disc) {
 		});
 	}
 	/* do poprawy w innym miejscu..*/
-	enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
+	if (enemyDisc.length > 0) {
+		enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
+	}
 
 	return { placesToMove: placesToMove, enemyDisc: enemyDisc };
 }
 
 /* */
 discs.forEach((disc) => {
-	//disc.addEventListener('dragstart', chooseDiscToMove);
 	disc.addEventListener('click', chooseDiscToMove);
 });
 
 darkSquares.forEach((square) => {
 	square.addEventListener('click', moveDisc);
-	//	square.addEventListener('dragover', changeStateOfDisc);
-	//square.addEventListener('drop', moveDisc);
 });
-
-export { isSquareEmpty, squareIsOccupiedByEnemy };
