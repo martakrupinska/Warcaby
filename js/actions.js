@@ -109,7 +109,6 @@ function captureEnemyDisc(start, enemyDisc) {
 			}
 			i = i + 3;
 		}
-		console.log(enemyElement);
 		if (isEnemy(enemyElement)) {
 			enemyElement.removeChild(enemyElement.firstElementChild);
 		}

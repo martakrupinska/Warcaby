@@ -66,21 +66,35 @@ class Discs {
 		return indexes;
 	}
 
-	getFirstStep() {
-		const row = this.getRowNumber();
+	getQuantityOfColumnFromIndexesTable() {
 		const index = this.getIndexesOfStep();
+		if (index.length > 0) {
+			return parseInt(index[1].length) - 1;
+		}
+	}
+
+	getFirstStep() {
+		const index = this.getIndexesOfStep();
+		const columnNumber = this.getQuantityOfColumnFromIndexesTable();
+		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
 
-		for (let j = 1; j <= 2; j++) {
-			if (row !== rowRow[0] && index[row - 1][0] && index[row - 1][j]) {
-				firstStep.push(getBoardElement(index[row - 1][0], index[row - 1][j]));
+		for (let j = 1; j <= columnNumber; j++) {
+			if (index[rowNumber.stepBack][0] && index[rowNumber.stepBack][j]) {
+				firstStep.push(
+					getBoardElement(
+						index[rowNumber.stepBack][0],
+						index[rowNumber.stepBack][j]
+					)
+				);
 			}
-			if (
-				row !== rowRow[rowRow.length - 1] &&
-				index[row + 1][0] &&
-				index[row + 1][j]
-			) {
-				firstStep.push(getBoardElement(index[row + 1][0], index[row + 1][j]));
+			if (index[rowNumber.forward][0] && index[rowNumber.forward][j]) {
+				firstStep.push(
+					getBoardElement(
+						index[rowNumber.forward][0],
+						index[rowNumber.forward][j]
+					)
+				);
 			}
 		}
 		return firstStep;
@@ -92,11 +106,11 @@ class Discs {
 		let enemyDisc = [];
 		const row = this.getRowNumber();
 
-		const firstStep = this.getFirstStep();
+		const firstSteps = this.getFirstStep();
 
-		const newStepMap = firstStep.map((square) => {
+		const newStepMap = firstSteps.map((square) => {
 			if (squareIsOccupiedByEnemy(square, this.enemyColor)) {
-				const indexOfFirstStep = firstStep.indexOf(square);
+				const indexOfFirstStep = firstSteps.indexOf(square);
 
 				let rowFirstOfStep;
 				if (indexOfFirstStep === 1 || indexOfFirstStep === 3) {
@@ -158,6 +172,20 @@ class White extends Discs {
 	getForwardSteps(step) {
 		return [step[1], step[3]];
 	}
+	getForwardAndStepBackRowNumberToStep() {
+		const rowNumber = this.getRowNumber();
+
+		let forward = rowNumber + 1;
+		let back = rowNumber - 1;
+
+		if (rowNumber === rowRow[0]) {
+			back = null;
+		} else if (rowNumber === rowRow[rowRow.length - 1]) {
+			forward = null;
+		}
+		console.log(forward, back);
+		return { forward: forward, stepBack: back };
+	}
 
 	/* 	findMaxRowNumber() {
 		return boardPieces - this.getRowNumber();
@@ -181,6 +209,21 @@ class Black extends Discs {
 	getForwardSteps(step) {
 		return [step[0], step[2]];
 	}
+
+	getForwardAndStepBackRowNumberToStep() {
+		const rowNumber = this.getRowNumber();
+
+		let forward = rowNumber - 1;
+		let back = rowNumber + 1;
+
+		if (rowNumber === rowRow[0]) {
+			forward = null;
+		} else if (rowNumber === rowRow[rowRow.length - 1]) {
+			back = null;
+		}
+		return { forward: forward, stepBack: back };
+	}
+
 	/* 	findMaxRowNumber() {
 		return boardPieces - (boardPieces - this.getRowNumber() + 1);
 	}
