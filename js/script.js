@@ -40,6 +40,16 @@ function getBoardElement(row, col) {
 	return allColumn[index];
 }
 
+function pushRowAndColToFirstStep(rowNumber, colNumber) {
+	let step;
+	let index;
+	if (rowNumber && colNumber) {
+		step = getBoardElement(rowNumber, colNumber);
+		index = [rowNumber, colNumber];
+	}
+	return { firstStep: step, indexOfFirsSteps: index };
+}
+
 const editBtns = document.querySelectorAll('.gamer__button--edit');
 
 function saveGamerName(e) {
@@ -94,4 +104,4 @@ editBtns.forEach((btn) => {
 	btn.addEventListener('click', showPopUpWithUserName);
 });
 
-export { createHint, getBoardElement };
+export { createHint, getBoardElement, pushRowAndColToFirstStep };

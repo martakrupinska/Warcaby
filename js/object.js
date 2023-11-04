@@ -1,4 +1,4 @@
-import { getBoardElement } from './script.js';
+import { getBoardElement, pushRowAndColToFirstStep } from './script.js';
 const boardPieces = 8;
 const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
 const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -75,31 +75,29 @@ class Discs {
 		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
 		let indexOfFirsSteps = [];
+		let steps;
 
 		for (let j = 1; j <= columnNumber; j++) {
-			if (index[rowNumber.stepBack][0] && index[rowNumber.stepBack][j]) {
-				firstStep.push(
-					getBoardElement(
-						index[rowNumber.stepBack][0],
-						index[rowNumber.stepBack][j]
-					)
-				);
-				indexOfFirsSteps.push([
+			if (rowNumber.stepBack) {
+				//	if (index[rowNumber.stepBack][0] && index[rowNumber.stepBack][j]) {
+				steps = pushRowAndColToFirstStep(
 					index[rowNumber.stepBack][0],
-					index[rowNumber.stepBack][j],
-				]);
-			}
-			if (index[rowNumber.forward][0] && index[rowNumber.forward][j]) {
-				firstStep.push(
-					getBoardElement(
-						index[rowNumber.forward][0],
-						index[rowNumber.forward][j]
-					)
+					index[rowNumber.stepBack][j]
 				);
-				indexOfFirsSteps.push([
+				//}
+			}
+
+			if (rowNumber.forward) {
+				//	if (index[rowNumber.forward][0] && index[rowNumber.forward][j]) {
+				steps = pushRowAndColToFirstStep(
 					index[rowNumber.forward][0],
-					index[rowNumber.forward][j],
-				]);
+					index[rowNumber.forward][j]
+				);
+				//}
+			}
+			if (steps) {
+				firstStep.push(steps.firstStep);
+				indexOfFirsSteps.push(steps.indexOfFirsSteps);
 			}
 		}
 		return [firstStep, indexOfFirsSteps];
@@ -138,7 +136,6 @@ class White extends Discs {
 		} else if (rowNumber === rowRow[rowRow.length - 1]) {
 			forward = null;
 		}
-		console.log(forward, back);
 		return { forward: forward, stepBack: back };
 	}
 }

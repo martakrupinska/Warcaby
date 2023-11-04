@@ -149,20 +149,30 @@ const getIndexesOfFirstStep = (disc, square) => {
 
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
-
 	const indexes = getIndexesOfFirstStep(disc, square);
 
-	//console.log(disc.getForwardAndStepBackRowNumberToStep().forward, indexes.row);
-	/* do poprawy - nie działa dla czarnych, bo jest row + 1 */
-	const element = getBoardElement(
-		...getIndexes(disc, indexes.row + 1, indexes.columnId)
+	const rowAndColNumberAdd = getIndexes(
+		disc,
+		indexes.row + 1,
+		indexes.columnId
 	);
+	const rowAndColNumberSub = getIndexes(
+		disc,
+		indexes.row - 1,
+		indexes.columnId
+	);
+	let element;
+
+	if (!rowAndColNumberAdd.includes(undefined)) {
+		element = getBoardElement(...rowAndColNumberAdd);
+	} else {
+		element = getBoardElement(...rowAndColNumberSub);
+	}
 
 	if (isSquareEmpty(element)) {
 		enemyDisc.push(square, [
 			...getIndexes(disc, indexes.row, indexes.columnId),
 		]);
-
 		return { element: element, enemyDisc: enemyDisc };
 	}
 }
@@ -183,12 +193,14 @@ function findNextStep(disc) {
 	const firstSteps = disc.getFirstSteps();
 
 	const nextStepToCaptureDiscs = firstSteps[0].map((square) => {
+		console.log(square);
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
-			/* do poprawy jak nie ma kroku - wywala błąd */
-			placesToMove.push(steps.element);
-			enemyDisc.push(steps.enemyDisc);
-			return steps.element;
+			if (steps) {
+				placesToMove.push(steps.element);
+				enemyDisc.push(steps.enemyDisc);
+				return steps.element;
+			}
 		}
 	});
 
