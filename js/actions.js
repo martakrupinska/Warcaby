@@ -193,7 +193,6 @@ function findNextStep(disc) {
 	const firstSteps = disc.getFirstSteps();
 
 	const nextStepToCaptureDiscs = firstSteps[0].map((square) => {
-		console.log(square);
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
 			if (steps) {
@@ -204,7 +203,9 @@ function findNextStep(disc) {
 		}
 	});
 
-	let forwardStep = movedDisc.getForwardSteps(firstSteps[0]);
+	let forwardStep = getTableWithoudUndefindElement(
+		movedDisc.getForwardSteps(firstSteps[0])
+	);
 
 	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
 		nextStepToCaptureDiscs

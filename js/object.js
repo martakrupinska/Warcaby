@@ -75,29 +75,26 @@ class Discs {
 		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
 		let indexOfFirsSteps = [];
-		let steps;
 
 		for (let j = 1; j <= columnNumber; j++) {
+			let back;
+			let forward;
 			if (rowNumber.stepBack) {
-				//	if (index[rowNumber.stepBack][0] && index[rowNumber.stepBack][j]) {
-				steps = pushRowAndColToFirstStep(
+				back = pushRowAndColToFirstStep(
 					index[rowNumber.stepBack][0],
 					index[rowNumber.stepBack][j]
 				);
-				//}
+				firstStep.push(back.firstStep);
+				indexOfFirsSteps.push(back.indexOfFirsSteps);
 			}
 
 			if (rowNumber.forward) {
-				//	if (index[rowNumber.forward][0] && index[rowNumber.forward][j]) {
-				steps = pushRowAndColToFirstStep(
+				forward = pushRowAndColToFirstStep(
 					index[rowNumber.forward][0],
 					index[rowNumber.forward][j]
 				);
-				//}
-			}
-			if (steps) {
-				firstStep.push(steps.firstStep);
-				indexOfFirsSteps.push(steps.indexOfFirsSteps);
+				firstStep.push(forward.firstStep);
+				indexOfFirsSteps.push(forward.indexOfFirsSteps);
 			}
 		}
 		return [firstStep, indexOfFirsSteps];
@@ -122,8 +119,17 @@ class White extends Discs {
 		this.enemyColor = 'black';
 	}
 
-	getForwardSteps(step) {
-		return [step[1], step[3]];
+	getForwardSteps() {
+		const steps = this.getFirstSteps();
+		const rowNumber = this.getRowNumber();
+
+		const forward = steps[1].map((row) => {
+			if (rowNumber + 1 === row[0]) {
+				const index = steps[1].indexOf(row);
+				return steps[0][index];
+			}
+		});
+		return forward;
 	}
 	getForwardAndStepBackRowNumberToStep() {
 		const rowNumber = this.getRowNumber();
@@ -144,8 +150,17 @@ class Black extends Discs {
 		super(HTMLelement), (this.color = 'black');
 		this.enemyColor = 'white';
 	}
-	getForwardSteps(step) {
-		return [step[1], step[3]];
+	getForwardSteps() {
+		const steps = this.getFirstSteps();
+		const rowNumber = this.getRowNumber();
+
+		const forward = steps[1].map((row) => {
+			if (rowNumber - 1 === row[0]) {
+				const index = steps[1].indexOf(row);
+				return steps[0][index];
+			}
+		});
+		return forward;
 	}
 
 	getForwardAndStepBackRowNumberToStep() {
