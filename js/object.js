@@ -1,7 +1,6 @@
 import { pushRowAndColToFirstStep } from './script.js';
 const boardPieces = 8;
-const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
-const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
+const row = [1, 2, 3, 4, 5, 6, 7, 8];
 
 class Discs {
 	constructor(HTMLelement) {
@@ -40,10 +39,10 @@ class Discs {
 		col_left.unshift(undefined);
 		col_right.unshift(undefined);
 
-		for (let f = 0; f <= rowRow.length; f++) {
-			if (rowRow[f] < this.getRowNumber()) {
-				col_left.unshift(colNumber - rowRow[f]);
-				col_right.unshift(colNumber + rowRow[f]);
+		for (let f = 0; f <= row.length; f++) {
+			if (row[f] < this.getRowNumber()) {
+				col_left.unshift(colNumber - row[f]);
+				col_right.unshift(colNumber + row[f]);
 			}
 		}
 
@@ -56,7 +55,7 @@ class Discs {
 		const col_right = this.getColumnToMoveIsPossible()[1];
 
 		for (let g = 1; g <= boardPieces; g++) {
-			indexes[g] = [rowRow[g - 1], col_left[g - 1], col_right[g - 1]];
+			indexes[g] = [row[g - 1], col_left[g - 1], col_right[g - 1]];
 		}
 		return indexes;
 	}
@@ -142,9 +141,9 @@ class White extends Discs {
 		let forward = rowNumber + 1;
 		let back = rowNumber - 1;
 
-		if (rowNumber === rowRow[0]) {
+		if (rowNumber === row[0]) {
 			back = null;
-		} else if (rowNumber === rowRow[rowRow.length - 1]) {
+		} else if (rowNumber === row[row.length - 1]) {
 			forward = null;
 		}
 		return { forward: forward, stepBack: back };
@@ -176,9 +175,9 @@ class Black extends Discs {
 		let forward = rowNumber - 1;
 		let back = rowNumber + 1;
 
-		if (rowNumber === rowRow[0]) {
+		if (rowNumber === row[0]) {
 			forward = null;
-		} else if (rowNumber === rowRow[rowRow.length - 1]) {
+		} else if (rowNumber === row[row.length - 1]) {
 			back = null;
 		}
 		return { forward: forward, stepBack: back };

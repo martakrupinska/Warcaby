@@ -184,6 +184,9 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 }
 
 const getTableWithoudUndefindElement = (table) => {
+	if (!table) {
+		return false;
+	}
 	const elements = table.filter((element) => {
 		if (element !== 'undefined' || element !== '') {
 			return element;
@@ -196,15 +199,12 @@ function findNextStep(disc) {
 	let placesToMove = [];
 	let enemyDisc = [];
 
-	const firstSteps = disc.getFirstSteps();
-	console.log(firstSteps);
-
-	const stepsElements = getTableWithoudUndefindElement(firstSteps[0]);
+	const stepsElements = getTableWithoudUndefindElement(disc.getFirstSteps()[0]);
 
 	const nextStepToCaptureDiscs = stepsElements.map((square) => {
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
-			console.log(steps);
+
 			if (steps) {
 				placesToMove.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);
