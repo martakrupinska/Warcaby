@@ -143,6 +143,12 @@ body .popup {
     border: 0px;
     cursor: pointer;
   }
+  body .main-table .gamer__icon--back {
+    opacity: 0;
+  }
+  body .main-table .gamer__icon--forward {
+    opacity: 0;
+  }
   body .main-table .board__dscrpt {
     font-size: 12px;
   }
@@ -267,6 +273,12 @@ body .popup {
     font-size: 15px;
     border: 0px;
     cursor: pointer;
+  }
+  body .main-table .gamer__icon--back {
+    opacity: 0;
+  }
+  body .main-table .gamer__icon--forward {
+    opacity: 0;
   }
   body .main-table .board__dscrpt {
     font-size: 12px;

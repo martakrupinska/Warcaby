@@ -1,4 +1,4 @@
-import { createHint, getBoardElement } from './script.js';
+import { createHint, getBoardElement, showPlayer } from './script.js';
 import { White, Black } from './object.js';
 
 let movedDisc;
@@ -41,13 +41,15 @@ function createObjectDisc(e) {
 function showPossibleMoves(e) {
 	const disc = createObjectDisc(e);
 
-	if (disc) {
-		const steps = findNextStep(disc);
-
-		steps.placesToMove.forEach((step) => {
-			createHint(step);
-		});
+	if (!disc) {
+		return false;
 	}
+
+	const steps = findNextStep(disc);
+
+	steps.placesToMove.forEach((step) => {
+		createHint(step);
+	});
 }
 
 function removePossibleMoves() {
@@ -59,6 +61,12 @@ function removePossibleMoves() {
 
 function chooseDiscToMove(e) {
 	removePossibleMoves();
+
+	if (movedDisc) {
+		if (movedDisc.color === e.target.classList.value.split('--')[1]) {
+			return false;
+		}
+	}
 	movedDisc = createObjectDisc(e);
 	startSquare = e.target;
 	showPossibleMoves(e);
@@ -130,6 +138,8 @@ function moveDisc(e) {
 		movedDisc.HTMLelement.parentNode.removeChild(movedDisc.HTMLelement);
 		target.appendChild(movedDisc.HTMLelement);
 		captureEnemyDisc(start, indexes.enemyDisc);
+		console.log(movedDisc);
+		showPlayer(movedDisc.enemyColor);
 	}
 }
 
@@ -204,7 +214,7 @@ function findNextStep(disc) {
 	const nextStepToCaptureDiscs = stepsElements.map((square) => {
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
-
+			//	console.log(steps);
 			if (steps) {
 				placesToMove.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);
@@ -228,6 +238,7 @@ function findNextStep(disc) {
 			}
 		});
 	}
+	//console.log(enemyDisc);
 	/* do poprawy w innym miejscu..*/
 	if (enemyDisc.length > 0) {
 		enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];

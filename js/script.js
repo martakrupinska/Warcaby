@@ -100,8 +100,22 @@ function showPopUpWithUserName(e) {
 	cancelBtn.addEventListener('click', cancelPopup);
 }
 
+function showPlayer(player) {
+	const white = document.querySelector('.gamer__icon--forward');
+	const black = document.querySelector('.gamer__icon--back');
+
+	white.style.opacity = 0;
+	black.style.opacity = 0;
+
+	if (player === 'white') {
+		white.style.opacity = 1;
+	} else if (player === 'black') {
+		black.style.opacity = 1;
+	}
+}
+
 editBtns.forEach((btn) => {
 	btn.addEventListener('click', showPopUpWithUserName);
 });
 
-export { createHint, getBoardElement, pushRowAndColToFirstStep };
+export { createHint, getBoardElement, pushRowAndColToFirstStep, showPlayer };

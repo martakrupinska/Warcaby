@@ -139,6 +139,12 @@ body {
 						cursor: pointer;
 					}
 				}
+				&__icon--back {
+					opacity: 0;
+				}
+				&__icon--forward {
+					opacity: 0;
+				}
 			}
 
 			.board {
@@ -269,6 +275,12 @@ body {
 						border: 0px;
 						cursor: pointer;
 					}
+				}
+				&__icon--back {
+					opacity: 0;
+				}
+				&__icon--forward {
+					opacity: 0;
 				}
 			}
 
