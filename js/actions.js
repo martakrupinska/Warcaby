@@ -3,6 +3,7 @@ import { White, Black } from './object.js';
 
 let movedDisc;
 let startSquare;
+let isCapturedEnemy;
 
 const discs = document.querySelectorAll('.disc');
 const darkSquares = document.querySelectorAll('.board__square--dark');
@@ -62,12 +63,13 @@ function removePossibleMoves() {
 function chooseDiscToMove(e) {
 	removePossibleMoves();
 
-	if (movedDisc) {
+	if (movedDisc && !isCapturedEnemy) {
 		if (movedDisc.color === e.target.classList.value.split('--')[1]) {
 			return false;
 		}
 	}
 	movedDisc = createObjectDisc(e);
+	console.log(movedDisc);
 	startSquare = e.target;
 	showPossibleMoves(e);
 }
@@ -113,8 +115,10 @@ function captureEnemyDisc(start, enemyDisc) {
 		}
 		if (isEnemy(enemyElement)) {
 			enemyElement.removeChild(enemyElement.firstElementChild);
+			return true;
 		}
 	}
+	return false;
 }
 
 function moveDisc(e) {
@@ -137,9 +141,12 @@ function moveDisc(e) {
 	if (indexes.placesToMove.includes(target)) {
 		movedDisc.HTMLelement.parentNode.removeChild(movedDisc.HTMLelement);
 		target.appendChild(movedDisc.HTMLelement);
-		captureEnemyDisc(start, indexes.enemyDisc);
-		console.log(movedDisc);
-		showPlayer(movedDisc.enemyColor);
+
+		isCapturedEnemy = captureEnemyDisc(start, indexes.enemyDisc);
+
+		isCapturedEnemy
+			? showPlayer(movedDisc.color)
+			: showPlayer(movedDisc.enemyColor);
 	}
 }
 
