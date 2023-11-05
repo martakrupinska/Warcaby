@@ -1,4 +1,4 @@
-import { getBoardElement, pushRowAndColToFirstStep } from './script.js';
+import { pushRowAndColToFirstStep } from './script.js';
 const boardPieces = 8;
 const rowRow = [1, 2, 3, 4, 5, 6, 7, 8];
 const colCol = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -25,7 +25,6 @@ class Discs {
 		const col_left = [];
 		const col_right = [];
 		const colNumber = this.getColNumber();
-		const rowNumber = this.getRowNumber();
 
 		let j = 1;
 		while (j < boardPieces + 1) {
@@ -42,7 +41,7 @@ class Discs {
 		col_right.unshift(undefined);
 
 		for (let f = 0; f <= rowRow.length; f++) {
-			if (rowRow[f] < rowNumber) {
+			if (rowRow[f] < this.getRowNumber()) {
 				col_left.unshift(colNumber - rowRow[f]);
 				col_right.unshift(colNumber + rowRow[f]);
 			}
@@ -63,10 +62,26 @@ class Discs {
 	}
 
 	getQuantityOfColumnFromIndexesTable() {
-		const index = this.getIndexesOfPossibleSteps();
-		if (index.length > 0) {
-			return parseInt(index[1].length) - 1;
+		const column = this.getColumnToMoveIsPossible();
+		if (column.length) {
+			return parseInt(column.length);
 		}
+	}
+
+	getColId(row, col) {
+		if (!row || !col) {
+			return false;
+		}
+
+		const indexes = this.getIndexesOfPossibleSteps();
+		let columnId;
+
+		indexes.forEach((x) => {
+			if (x[0] === row) {
+				columnId = x.indexOf(col);
+			}
+		});
+		return columnId;
 	}
 
 	getFirstSteps() {
@@ -99,18 +114,6 @@ class Discs {
 		}
 		return [firstStep, indexOfFirsSteps];
 	}
-
-	getColId(row, col) {
-		const indexes = this.getIndexesOfPossibleSteps();
-		let columnId;
-
-		indexes.forEach((x) => {
-			if (x[0] === row) {
-				columnId = x.indexOf(col);
-			}
-		});
-		return columnId;
-	}
 }
 
 class White extends Discs {
@@ -124,9 +127,11 @@ class White extends Discs {
 		const rowNumber = this.getRowNumber();
 
 		const forward = steps[1].map((row) => {
-			if (rowNumber + 1 === row[0]) {
-				const index = steps[1].indexOf(row);
-				return steps[0][index];
+			if (row !== undefined) {
+				if (rowNumber + 1 === row[0]) {
+					const index = steps[1].indexOf(row);
+					return steps[0][index];
+				}
 			}
 		});
 		return forward;
@@ -155,9 +160,11 @@ class Black extends Discs {
 		const rowNumber = this.getRowNumber();
 
 		const forward = steps[1].map((row) => {
-			if (rowNumber - 1 === row[0]) {
-				const index = steps[1].indexOf(row);
-				return steps[0][index];
+			if (row !== undefined) {
+				if (rowNumber - 1 === row[0]) {
+					const index = steps[1].indexOf(row);
+					return steps[0][index];
+				}
 			}
 		});
 		return forward;

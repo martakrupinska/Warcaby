@@ -1,5 +1,5 @@
 import { createHint, getBoardElement } from './script.js';
-import { Discs, White, Black } from './object.js';
+import { White, Black } from './object.js';
 
 let movedDisc;
 let startSquare;
@@ -16,6 +16,7 @@ const isSquareEmpty = (square) => {
 
 const squareIsOccupiedByEnemy = (square, enemyColor) => {
 	if (!square.children.item(0)) {
+		//console.error('Brakuje pola, na które pionek mógłby iść!');
 		return false;
 	}
 	return square.children.item(0).classList.contains('disc--' + enemyColor);
@@ -133,8 +134,11 @@ function moveDisc(e) {
 }
 
 /* */
-const getIndexes = (disc, rowNumber, colId) => {
-	const index = disc.getIndexesOfPossibleSteps();
+const getIndexes = (index, rowNumber, colId) => {
+	if (!index || !rowNumber || !colId) {
+		return false;
+	}
+
 	return [index[rowNumber][0], index[rowNumber][colId]];
 };
 
@@ -150,17 +154,19 @@ const getIndexesOfFirstStep = (disc, square) => {
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
 	const indexes = getIndexesOfFirstStep(disc, square);
+	const indexOfPossibleSteps = disc.getIndexesOfPossibleSteps();
 
 	const rowAndColNumberAdd = getIndexes(
-		disc,
+		indexOfPossibleSteps,
 		indexes.row + 1,
 		indexes.columnId
 	);
 	const rowAndColNumberSub = getIndexes(
-		disc,
+		indexOfPossibleSteps,
 		indexes.row - 1,
 		indexes.columnId
 	);
+
 	let element;
 
 	if (!rowAndColNumberAdd.includes(undefined)) {
@@ -171,7 +177,7 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 
 	if (isSquareEmpty(element)) {
 		enemyDisc.push(square, [
-			...getIndexes(disc, indexes.row, indexes.columnId),
+			...getIndexes(indexOfPossibleSteps, indexes.row, indexes.columnId),
 		]);
 		return { element: element, enemyDisc: enemyDisc };
 	}
@@ -191,10 +197,14 @@ function findNextStep(disc) {
 	let enemyDisc = [];
 
 	const firstSteps = disc.getFirstSteps();
+	console.log(firstSteps);
 
-	const nextStepToCaptureDiscs = firstSteps[0].map((square) => {
+	const stepsElements = getTableWithoudUndefindElement(firstSteps[0]);
+
+	const nextStepToCaptureDiscs = stepsElements.map((square) => {
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
+			console.log(steps);
 			if (steps) {
 				placesToMove.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);
@@ -204,7 +214,7 @@ function findNextStep(disc) {
 	});
 
 	let forwardStep = getTableWithoudUndefindElement(
-		movedDisc.getForwardSteps(firstSteps[0])
+		movedDisc.getForwardSteps(stepsElements)
 	);
 
 	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
