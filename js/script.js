@@ -22,6 +22,7 @@ const setPiecesOnBoard = () => {
 		}
 	}
 };
+
 function createHint(parent) {
 	const hint = document.createElement('div');
 	hint.classList.add('hint');

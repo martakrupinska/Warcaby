@@ -18,7 +18,6 @@ const isSquareEmpty = (square) => {
 
 const squareIsOccupiedByEnemy = (square, enemyColor) => {
 	if (!square.children.item(0)) {
-		//console.error('Brakuje pola, na które pionek mógłby iść!');
 		return false;
 	}
 	return square.children.item(0).classList.contains('disc--' + enemyColor);
@@ -62,11 +61,6 @@ function removePossibleMoves() {
 }
 
 const checkIfMoveIsPossible = (e) => {
-	/* 	console.log('isDiscMoved: ' + isDiscMoved);
-	console.log(movedDisc);
-	console.log(e.target.classList.value.split('--')[1]);
-	console.log('isCapturedEnemy: ' + isCapturedEnemy); */
-
 	if (!movedDisc) {
 		return true;
 	}
@@ -100,15 +94,10 @@ const checkIfMoveIsPossible = (e) => {
 function chooseDiscToMove(e) {
 	removePossibleMoves();
 
-	const isMovePossible = Boolean(checkIfMoveIsPossible(e));
-
-	if (!isMovePossible);
-	{
-		console.log(!isMovePossible);
-		//	return false;
+	if (!checkIfMoveIsPossible(e)) {
+		return false;
 	}
 
-	console.log(isMovePossible);
 	movedDisc = createObjectDisc(e);
 	startSquare = e.target;
 	showPossibleMoves(e);
@@ -264,7 +253,6 @@ function findNextStep(disc) {
 	const nextStepToCaptureDiscs = stepsElements.map((square) => {
 		if (squareIsOccupiedByEnemy(square, disc.enemyColor)) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
-			//	console.log(steps);
 			if (steps) {
 				placesToMove.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);

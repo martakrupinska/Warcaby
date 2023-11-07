@@ -1,4 +1,5 @@
 import { pushRowAndColToFirstStep } from './script.js';
+
 const boardPieces = 8;
 const row = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -13,6 +14,7 @@ class Discs {
 
 		return parseInt(rowNumber);
 	}
+
 	getColNumber() {
 		const row = this.HTMLelement.closest('tr');
 		const col = Array.prototype.slice.call(row.querySelectorAll('td'));
@@ -135,6 +137,7 @@ class White extends Discs {
 		});
 		return forward;
 	}
+
 	getForwardAndStepBackRowNumberToStep() {
 		const rowNumber = this.getRowNumber();
 
@@ -149,11 +152,13 @@ class White extends Discs {
 		return { forward: forward, stepBack: back };
 	}
 }
+
 class Black extends Discs {
 	constructor(HTMLelement) {
 		super(HTMLelement), (this.color = 'black');
 		this.enemyColor = 'white';
 	}
+	
 	getForwardSteps() {
 		const steps = this.getFirstSteps();
 		const rowNumber = this.getRowNumber();
