@@ -4,6 +4,7 @@ import { White, Black } from './object.js';
 let movedDisc;
 let startSquare;
 let isCapturedEnemy;
+let isDiscMoved;
 
 const discs = document.querySelectorAll('.disc');
 const darkSquares = document.querySelectorAll('.board__square--dark');
@@ -60,18 +61,59 @@ function removePossibleMoves() {
 	});
 }
 
-function chooseDiscToMove(e) {
-	removePossibleMoves();
+const checkIfMoveIsPossible = (e) => {
+	/* 	console.log('isDiscMoved: ' + isDiscMoved);
+	console.log(movedDisc);
+	console.log(e.target.classList.value.split('--')[1]);
+	console.log('isCapturedEnemy: ' + isCapturedEnemy); */
 
-	if (movedDisc && !isCapturedEnemy) {
-		if (movedDisc.color === e.target.classList.value.split('--')[1]) {
+	if (!movedDisc) {
+		return true;
+	}
+
+	const colorPrevious = e.target.classList.value.split('--')[1];
+	const colorCurrent = movedDisc.color;
+
+	if (isDiscMoved === null) {
+		if (colorCurrent !== colorPrevious) {
+			console.error('dwa ruchy jednego koloru po kliknięciu na przeciwny');
 			return false;
 		}
 	}
+
+	if (isDiscMoved && isCapturedEnemy) {
+		if (colorCurrent !== colorPrevious) {
+			console.error('ruch przeciwnika po zbiciu');
+			return false;
+		}
+	}
+
+	if (isDiscMoved && !isCapturedEnemy) {
+		if (colorCurrent === colorPrevious) {
+			console.error('dwa ruchy jednego koloru!');
+			return false;
+		}
+	}
+	return true;
+};
+
+function chooseDiscToMove(e) {
+	removePossibleMoves();
+
+	const isMovePossible = Boolean(checkIfMoveIsPossible(e));
+
+	if (!isMovePossible);
+	{
+		console.log(!isMovePossible);
+		//	return false;
+	}
+
+	console.log(isMovePossible);
 	movedDisc = createObjectDisc(e);
-	console.log(movedDisc);
 	startSquare = e.target;
 	showPossibleMoves(e);
+	isCapturedEnemy = null;
+	isDiscMoved = null;
 }
 
 function isEnemy(enemyElement) {
@@ -142,6 +184,7 @@ function moveDisc(e) {
 		movedDisc.HTMLelement.parentNode.removeChild(movedDisc.HTMLelement);
 		target.appendChild(movedDisc.HTMLelement);
 
+		isDiscMoved = true;
 		isCapturedEnemy = captureEnemyDisc(start, indexes.enemyDisc);
 
 		isCapturedEnemy
