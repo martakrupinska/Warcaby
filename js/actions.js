@@ -25,8 +25,6 @@ const squareIsOccupiedByEnemy = (square, enemyColor) => {
 
 function createObjectDisc(activeDisc) {
 	let disc;
-	//	const activeDisc = e.target;
-	//console.log(e.target);
 
 	if (!activeDisc) {
 		return false;
@@ -186,8 +184,8 @@ function moveDisc(e) {
 			? showPlayer(movedDisc.color)
 			: showPlayer(movedDisc.enemyColor);
 
-		let isPossibleMove = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
-		console.log(isPossibleMove);
+		let isGameOver = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
+		console.log(isGameOver);
 	}
 }
 
@@ -196,25 +194,24 @@ const findDiscWhichMoveIsPossible = (gamer) => {
 	let moves = [];
 
 	gamerDiscs.forEach((gamerDisc) => {
-		moves.push(findPossibleMovesToShowIt(gamerDisc).placesToMove);
-
-		//	console.log(findPossibleMovesToShowIt(gamerDisc).placesToMove.length);
-
-		if (!findPossibleMovesToShowIt(gamerDisc).placesToMove.length) {
-			return false;
-		}
+		moves = findPossibleMovesToShowIt(gamerDisc).placesToMove.length;
 	});
+
+	if (!moves) {
+		return false;
+	}
 	return true;
 };
 
 /* */
-const getIndexes = (index, rowNumber, colId) => {
+function getIndexes(index, rowNumber, colId) {
 	if (!index || !rowNumber || !colId) {
 		return false;
 	}
+	/* return chyba nie powinien być false tylko []*/
 
 	return [index[rowNumber][0], index[rowNumber][colId]];
-};
+}
 
 const getIndexesOfFirstStep = (disc, square) => {
 	const steps = disc.getFirstSteps();
@@ -228,10 +225,7 @@ const getIndexesOfFirstStep = (disc, square) => {
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
 	const indexes = getIndexesOfFirstStep(disc, square);
-	console.log(disc);
 	const indexOfPossibleSteps = disc.getIndexesOfPossibleSteps();
-
-	console.log(indexOfPossibleSteps);
 
 	const rowAndColNumberAdd = getIndexes(
 		indexOfPossibleSteps,
@@ -245,6 +239,7 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 	);
 
 	let element;
+	/* wywala bład jak dojde pionkiem do konca!! */
 	//console.log(indexOfPossibleSteps, rowAndColNumberSub);
 	if (!rowAndColNumberAdd.includes(undefined)) {
 		element = getBoardElement(...rowAndColNumberAdd);
