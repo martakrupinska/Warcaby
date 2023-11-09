@@ -28,7 +28,7 @@ class Discs {
 		const colNumber = this.getColNumber();
 
 		let j = 1;
-		while (j < boardPieces + 1) {
+		while (j <= boardPieces) {
 			if (j < colNumber) {
 				col_left.push(colNumber - j);
 			} else if (j > colNumber) {
@@ -43,8 +43,17 @@ class Discs {
 
 		for (let f = 0; f <= row.length; f++) {
 			if (row[f] < this.getRowNumber()) {
-				col_left.unshift(colNumber - row[f]);
-				col_right.unshift(colNumber + row[f]);
+				if (colNumber - row[f] > 0) {
+					col_left.unshift(colNumber - row[f]);
+				} else {
+					col_left.unshift(undefined);
+				}
+
+				if (colNumber + row[f] <= 8) {
+					col_right.unshift(colNumber + row[f]);
+				} else {
+					col_right.unshift(undefined);
+				}
 			}
 		}
 
@@ -53,12 +62,22 @@ class Discs {
 
 	getIndexesOfPossibleSteps() {
 		let indexes = [];
-		const col_left = this.getColumnToMoveIsPossible()[0];
-		const col_right = this.getColumnToMoveIsPossible()[1];
+
+		const column = this.getColumnToMoveIsPossible();
+		const col_left = column[0];
+		const col_right = column[1];
 
 		for (let g = 1; g <= boardPieces; g++) {
 			indexes[g] = [row[g - 1], col_left[g - 1], col_right[g - 1]];
 		}
+		console.log(indexes);
+
+		/* indexes.forEach((index) => {
+			if (index.includes(0)) {
+				index.splice(index.indexOf(index.includes(0)), 1, undefined);
+			}
+		});
+ */
 		return indexes;
 	}
 
@@ -158,7 +177,7 @@ class Black extends Discs {
 		super(HTMLelement), (this.color = 'black');
 		this.enemyColor = 'white';
 	}
-	
+
 	getForwardSteps() {
 		const steps = this.getFirstSteps();
 		const rowNumber = this.getRowNumber();

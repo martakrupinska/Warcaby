@@ -23,9 +23,10 @@ const squareIsOccupiedByEnemy = (square, enemyColor) => {
 	return square.children.item(0).classList.contains('disc--' + enemyColor);
 };
 
-function createObjectDisc(e) {
+function createObjectDisc(activeDisc) {
 	let disc;
-	const activeDisc = e.target;
+	//	const activeDisc = e.target;
+	//console.log(e.target);
 
 	if (!activeDisc) {
 		return false;
@@ -39,18 +40,23 @@ function createObjectDisc(e) {
 	return disc;
 }
 
-function showPossibleMoves(e) {
-	const disc = createObjectDisc(e);
+const findPossibleMovesToShowIt = (element) => {
+	const disc = createObjectDisc(element);
 
 	if (!disc) {
 		return false;
 	}
 
-	const steps = findNextStep(disc);
+	return findNextStep(disc);
+};
+
+function showPossibleMoves(element) {
+	const steps = findPossibleMovesToShowIt(element);
 
 	steps.placesToMove.forEach((step) => {
 		createHint(step);
 	});
+	return steps.placesToMove;
 }
 
 function removePossibleMoves() {
@@ -98,9 +104,9 @@ function chooseDiscToMove(e) {
 		return false;
 	}
 
-	movedDisc = createObjectDisc(e);
+	movedDisc = createObjectDisc(e.target);
 	startSquare = e.target;
-	showPossibleMoves(e);
+	showPossibleMoves(e.target);
 	isCapturedEnemy = null;
 	isDiscMoved = null;
 }
@@ -179,8 +185,27 @@ function moveDisc(e) {
 		isCapturedEnemy
 			? showPlayer(movedDisc.color)
 			: showPlayer(movedDisc.enemyColor);
+
+		let isPossibleMove = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
+		console.log(isPossibleMove);
 	}
 }
+
+const findDiscWhichMoveIsPossible = (gamer) => {
+	const gamerDiscs = document.querySelectorAll('.disc--' + gamer);
+	let moves = [];
+
+	gamerDiscs.forEach((gamerDisc) => {
+		moves.push(findPossibleMovesToShowIt(gamerDisc).placesToMove);
+
+		//	console.log(findPossibleMovesToShowIt(gamerDisc).placesToMove.length);
+
+		if (!findPossibleMovesToShowIt(gamerDisc).placesToMove.length) {
+			return false;
+		}
+	});
+	return true;
+};
 
 /* */
 const getIndexes = (index, rowNumber, colId) => {
@@ -203,7 +228,10 @@ const getIndexesOfFirstStep = (disc, square) => {
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
 	const indexes = getIndexesOfFirstStep(disc, square);
+	console.log(disc);
 	const indexOfPossibleSteps = disc.getIndexesOfPossibleSteps();
+
+	console.log(indexOfPossibleSteps);
 
 	const rowAndColNumberAdd = getIndexes(
 		indexOfPossibleSteps,
@@ -217,11 +245,13 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 	);
 
 	let element;
-
+	//console.log(indexOfPossibleSteps, rowAndColNumberSub);
 	if (!rowAndColNumberAdd.includes(undefined)) {
 		element = getBoardElement(...rowAndColNumberAdd);
-	} else {
+		//	console.log(indexOfPossibleSteps, rowAndColNumberAdd);
+	} else if (!rowAndColNumberSub.includes(undefined)) {
 		element = getBoardElement(...rowAndColNumberSub);
+		//	console.log('2', indexOfPossibleSteps, rowAndColNumberSub);
 	}
 
 	if (isSquareEmpty(element)) {
@@ -256,13 +286,14 @@ function findNextStep(disc) {
 			if (steps) {
 				placesToMove.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);
+
 				return steps.element;
 			}
 		}
 	});
 
 	let forwardStep = getTableWithoudUndefindElement(
-		movedDisc.getForwardSteps(stepsElements)
+		disc.getForwardSteps(stepsElements)
 	);
 
 	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
