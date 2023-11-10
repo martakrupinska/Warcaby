@@ -106,6 +106,8 @@ body {
 	.popup {
 		display: none;
 	}
+	.win-game {
+	}
 }
 
 @media (min-width: 672px) and (max-width: 990px) {
@@ -240,6 +242,27 @@ body {
 			}
 			.popup__button--cancel {
 				background-color: #e74c3c;
+			}
+		}
+		.win-game {
+			position: absolute;
+			top: 150px;
+			display: block;
+			width: 200px;
+			height: 120px;
+			//	opacity: 0;
+			background-color: #ecf0f1;
+			padding: 15px;
+
+			&__dscrpt {
+				text-transform: uppercase;
+				padding-bottom: 5px;
+				font-size: 20px;
+				text-align: center;
+			}
+			&__gamer {
+				font-size: 18px;
+				text-align: center;
 			}
 		}
 	}

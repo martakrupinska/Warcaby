@@ -105,7 +105,6 @@ body .main-table .board__square--gamer {
 body .popup {
   display: none;
 }
-
 @media (min-width: 672px) and (max-width: 990px) {
   body .main-table .gamer {
     display: -webkit-box;
@@ -235,6 +234,25 @@ body .popup {
   }
   body .popup .popup__button--cancel {
     background-color: #e74c3c;
+  }
+  body .win-game {
+    position: absolute;
+    top: 150px;
+    display: block;
+    width: 200px;
+    height: 120px;
+    background-color: #ecf0f1;
+    padding: 15px;
+  }
+  body .win-game__dscrpt {
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    font-size: 20px;
+    text-align: center;
+  }
+  body .win-game__gamer {
+    font-size: 18px;
+    text-align: center;
   }
 }
 @media (min-width: 990px) {
