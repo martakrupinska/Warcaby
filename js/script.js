@@ -115,8 +115,35 @@ function showPlayer(player) {
 	}
 }
 
+function setGameOverInformation(player) {
+	const colorOfGamer = document.querySelector('.disc__gamer--' + player);
+
+	const gamerClass = colorOfGamer.closest('.gamer');
+	const gamerNames = gamerClass.querySelector('.gamer__name');
+	const gamerNumbers = gamerClass.querySelector('.gamer__header');
+
+	const winInformation = document.querySelector('.win-game__gamer');
+	const winGame = document.querySelector('.win-game');
+
+	if (player) {
+		winGame.style.opacity = 1;
+		winInformation.textContent =
+			winInformation.textContent +
+			' ' +
+			(gamerNames.textContent
+				? gamerNames.textContent
+				: gamerNumbers.textContent);
+	}
+}
+
 editBtns.forEach((btn) => {
 	btn.addEventListener('click', showPopUpWithUserName);
 });
 
-export { createHint, getBoardElement, pushRowAndColToFirstStep, showPlayer };
+export {
+	createHint,
+	getBoardElement,
+	pushRowAndColToFirstStep,
+	showPlayer,
+	setGameOverInformation,
+};

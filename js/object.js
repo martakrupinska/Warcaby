@@ -70,7 +70,6 @@ class Discs {
 		for (let g = 1; g <= boardPieces; g++) {
 			indexes[g] = [row[g - 1], col_left[g - 1], col_right[g - 1]];
 		}
-		console.log(indexes);
 
 		/* indexes.forEach((index) => {
 			if (index.includes(0)) {

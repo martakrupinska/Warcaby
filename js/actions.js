@@ -1,4 +1,9 @@
-import { createHint, getBoardElement, showPlayer } from './script.js';
+import {
+	createHint,
+	getBoardElement,
+	showPlayer,
+	setGameOverInformation,
+} from './script.js';
 import { White, Black } from './object.js';
 
 let movedDisc;
@@ -184,20 +189,26 @@ function moveDisc(e) {
 			? showPlayer(movedDisc.color)
 			: showPlayer(movedDisc.enemyColor);
 
-		let isGameOver = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
-		console.log(isGameOver);
+		if (!findDiscWhichMoveIsPossible(movedDisc.enemyColor)) {
+			setGameOverInformation(movedDisc.color);
+		}
 	}
 }
 
 const findDiscWhichMoveIsPossible = (gamer) => {
 	const gamerDiscs = document.querySelectorAll('.disc--' + gamer);
-	let moves = [];
+	let possibleMoves = [];
+	let amountOfMoves = [];
 
 	gamerDiscs.forEach((gamerDisc) => {
-		moves = findPossibleMovesToShowIt(gamerDisc).placesToMove.length;
+		possibleMoves = findPossibleMovesToShowIt(gamerDisc).placesToMove.length;
+
+		if (possibleMoves > 0) {
+			amountOfMoves.push(possibleMoves);
+		}
 	});
 
-	if (!moves) {
+	if (!amountOfMoves.length) {
 		return false;
 	}
 	return true;
