@@ -197,6 +197,11 @@ function moveDisc(e) {
 
 const findDiscWhichMoveIsPossible = (gamer) => {
 	const gamerDiscs = document.querySelectorAll('.disc--' + gamer);
+
+	if (!gamerDiscs.length) {
+		return false;
+	}
+
 	let possibleMoves = [];
 	let amountOfMoves = [];
 
