@@ -222,9 +222,12 @@ const findDiscWhichMoveIsPossible = (gamer) => {
 /* */
 function getIndexes(index, rowNumber, colId) {
 	if (!index || !rowNumber || !colId) {
-		return false;
+		return [];
 	}
-	/* return chyba nie powinien być false tylko []*/
+
+	if (!index[rowNumber]) {
+		return [];
+	}
 
 	return [index[rowNumber][0], index[rowNumber][colId]];
 }
@@ -256,9 +259,15 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 
 	let element;
 
-	if (rowAndColNumberAdd && !rowAndColNumberAdd.includes(undefined)) {
+	if (
+		rowAndColNumberAdd.length > 0 &&
+		!rowAndColNumberAdd.includes(undefined)
+	) {
 		element = getBoardElement(...rowAndColNumberAdd);
-	} else if (rowAndColNumberSub && !rowAndColNumberSub.includes(undefined)) {
+	} else if (
+		rowAndColNumberSub.length > 0 &&
+		!rowAndColNumberSub.includes(undefined)
+	) {
 		element = getBoardElement(...rowAndColNumberSub);
 	}
 
