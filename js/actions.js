@@ -101,7 +101,7 @@ const checkIfMoveIsPossible = (e) => {
 };
 
 function chooseDiscToMove(e) {
-		removePossibleMoves();
+	removePossibleMoves();
 
 	if (!checkIfMoveIsPossible(e)) {
 		return false;
@@ -255,14 +255,11 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 	);
 
 	let element;
-	/* wywala bład jak dojde pionkiem do konca!! */
-	//console.log(indexOfPossibleSteps, rowAndColNumberSub);
-	if (!rowAndColNumberAdd.includes(undefined)) {
+
+	if (rowAndColNumberAdd && !rowAndColNumberAdd.includes(undefined)) {
 		element = getBoardElement(...rowAndColNumberAdd);
-		//	console.log(indexOfPossibleSteps, rowAndColNumberAdd);
-	} else if (!rowAndColNumberSub.includes(undefined)) {
+	} else if (rowAndColNumberSub && !rowAndColNumberSub.includes(undefined)) {
 		element = getBoardElement(...rowAndColNumberSub);
-		//	console.log('2', indexOfPossibleSteps, rowAndColNumberSub);
 	}
 
 	if (isSquareEmpty(element)) {
