@@ -6,7 +6,7 @@ let popup;
 function createDisc(classColor) {
 	const disc = document.createElement('div');
 	disc.classList.add('disc', 'disc--' + classColor);
-	disc.setAttribute('draggable', 'true');
+	//disc.setAttribute('draggable', 'true');
 	return disc;
 }
 
@@ -22,14 +22,13 @@ const setPiecesOnBoard = () => {
 		}
 	}
 };
+setPiecesOnBoard();
 
 function createHint(parent) {
 	const hint = document.createElement('div');
 	hint.classList.add('hint');
 	parent.appendChild(hint);
 }
-
-setPiecesOnBoard();
 
 function getBoardElement(row, col) {
 	const allColumn = document.querySelectorAll('tr .board__square');
@@ -126,7 +125,7 @@ function setGameOverInformation(player) {
 	const winGame = document.querySelector('.win-game');
 
 	if (player) {
-		winGame.style.opacity = 1;
+		winGame.style.display = 'block';
 		winInformation.textContent =
 			winInformation.textContent +
 			' ' +

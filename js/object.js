@@ -56,7 +56,6 @@ class Discs {
 				}
 			}
 		}
-
 		return [col_left, col_right];
 	}
 

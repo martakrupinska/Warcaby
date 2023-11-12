@@ -101,7 +101,7 @@ const checkIfMoveIsPossible = (e) => {
 };
 
 function chooseDiscToMove(e) {
-	removePossibleMoves();
+		removePossibleMoves();
 
 	if (!checkIfMoveIsPossible(e)) {
 		return false;

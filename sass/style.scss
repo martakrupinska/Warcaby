@@ -246,11 +246,11 @@ body {
 		}
 		.win-game {
 			position: absolute;
+			display: none;
 			top: 150px;
-			display: block;
 			width: 200px;
 			height: 120px;
-			opacity: 0;
+			
 			background-color: #ecf0f1;
 			padding: 15px;
 
@@ -399,6 +399,26 @@ body {
 			}
 			.popup__button--cancel {
 				background-color: #e74c3c;
+			}
+		}
+		.win-game {
+			position: absolute;
+			top: 150px;
+			width: 200px;
+			height: 120px;
+			display: none;
+			background-color: #ecf0f1;
+			padding: 15px;
+
+			&__dscrpt {
+				text-transform: uppercase;
+				padding-bottom: 5px;
+				font-size: 20px;
+				text-align: center;
+			}
+			&__gamer {
+				font-size: 18px;
+				text-align: center;
 			}
 		}
 	}
