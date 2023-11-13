@@ -4,6 +4,7 @@ import {
 	showPlayer,
 	setGameOverInformation,
 } from './script.js';
+
 import { White, Black } from './object.js';
 
 let movedDisc;
@@ -29,18 +30,15 @@ const squareIsOccupiedByEnemy = (square, enemyColor) => {
 };
 
 function createObjectDisc(activeDisc) {
-	let disc;
-
 	if (!activeDisc) {
 		return false;
 	}
 
 	if (activeDisc.classList.contains('disc--white')) {
-		disc = new White(activeDisc);
+		return new White(activeDisc);
 	} else if (activeDisc.classList.contains('disc--black')) {
-		disc = new Black(activeDisc);
+		return new Black(activeDisc);
 	}
-	return disc;
 }
 
 const findPossibleMovesToShowIt = (element) => {
@@ -56,6 +54,10 @@ const findPossibleMovesToShowIt = (element) => {
 function showPossibleMoves(element) {
 	const steps = findPossibleMovesToShowIt(element);
 
+	if (!steps) {
+		return false;
+	}
+
 	steps.placesToMove.forEach((step) => {
 		createHint(step);
 	});
@@ -64,6 +66,11 @@ function showPossibleMoves(element) {
 
 function removePossibleMoves() {
 	const hints = document.querySelectorAll('.hint');
+
+	if (!hints) {
+		return false;
+	}
+
 	hints.forEach((hint) => {
 		hint.parentNode.removeChild(hint);
 	});
@@ -124,15 +131,49 @@ function isEnemy(enemyElement) {
 }
 
 function isTwoRowDifference(startRow) {
+	if (!startRow) {
+		return false;
+	}
+
 	const stopRow = movedDisc.getRowNumber();
+	const rowDifference = 2;
 
 	return (
-		parseInt(startRow) === parseInt(stopRow) + 2 ||
-		parseInt(startRow) === parseInt(stopRow) - 2
+		parseInt(startRow) === parseInt(stopRow) + rowDifference ||
+		parseInt(startRow) === parseInt(stopRow) - rowDifference
 	);
 }
 
+const isEnemyInTopOrBottomDirection = (enemy, startRow) => {
+	if (!enemy || !startRow) {
+		return false;
+	}
+	const direction = 1;
+
+	return enemy === startRow + direction || enemy === startRow - direction;
+};
+
+const isEnemyInLeftDirection = (enemy, stopColumn) => {
+	if (!enemy || !stopColumn) {
+		return false;
+	}
+	const leftDirection = 1;
+	return enemy === stopColumn - leftDirection;
+};
+
+const isEnemyInRightDirection = (enemy, stopColumn) => {
+	if (!enemy || !stopColumn) {
+		return false;
+	}
+	const rightDirection = 1;
+	return enemy === stopColumn + rightDirection;
+};
+
 function captureEnemyDisc(start, enemyDisc) {
+	if (!start) {
+		return false;
+	}
+
 	const startRow = start.parentElement.firstElementChild.textContent;
 	const stopColumn = movedDisc.getColNumber();
 
@@ -141,13 +182,12 @@ function captureEnemyDisc(start, enemyDisc) {
 		let i = 0;
 
 		while (i < enemyDisc.length) {
-			if (
-				enemyDisc[i + 1] === parseInt(startRow) + 1 ||
-				enemyDisc[i + 1] === parseInt(startRow) - 1
-			) {
-				if (enemyDisc[i + 2] === parseInt(stopColumn) - 1) {
+			if (isEnemyInTopOrBottomDirection(enemyDisc[i + 1], parseInt(startRow))) {
+				if (isEnemyInLeftDirection(enemyDisc[i + 2], parseInt(stopColumn))) {
 					enemyElement = enemyDisc[i];
-				} else if (enemyDisc[i + 2] === parseInt(stopColumn) + 1) {
+				} else if (
+					isEnemyInRightDirection(enemyDisc[i + 2], parseInt(stopColumn))
+				) {
 					enemyElement = enemyDisc[i];
 				}
 			}
@@ -324,7 +364,7 @@ function findNextStep(disc) {
 			}
 		});
 	}
-	//console.log(enemyDisc);
+
 	/* do poprawy w innym miejscu..*/
 	if (enemyDisc.length > 0) {
 		enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
