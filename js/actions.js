@@ -1,11 +1,26 @@
 import {
-	createHint,
 	getBoardElement,
 	showPlayer,
 	setGameOverInformation,
 } from './script.js';
 
 import { White, Black } from './object.js';
+
+import {
+	isSquareEmpty,
+	squareIsOccupiedByEnemy,
+	isEnemy,
+	isTwoRowDifference,
+	isEnemyInTopOrBottomDirection,
+	isEnemyInLeftDirection,
+	isEnemyInRightDirection,
+	findDiscWhichMoveIsPossible,
+	showPossibleMoves,
+	removePossibleMoves,
+	getTableWithoudUndefindElement,
+	getIndexes,
+	getIndexesOfFirstStep,
+} from './additional.js';
 
 let movedDisc;
 let startSquare;
@@ -14,20 +29,6 @@ let isDiscMoved;
 
 const discs = document.querySelectorAll('.disc');
 const darkSquares = document.querySelectorAll('.board__square--dark');
-
-const isSquareEmpty = (square) => {
-	if (!square) {
-		return false;
-	}
-	return !square.children.length;
-};
-
-const squareIsOccupiedByEnemy = (square, enemyColor) => {
-	if (!square.children.item(0)) {
-		return false;
-	}
-	return square.children.item(0).classList.contains('disc--' + enemyColor);
-};
 
 function createObjectDisc(activeDisc) {
 	if (!activeDisc) {
@@ -40,72 +41,6 @@ function createObjectDisc(activeDisc) {
 		return new Black(activeDisc);
 	}
 }
-
-const findPossibleMovesToShowIt = (element) => {
-	const disc = createObjectDisc(element);
-
-	if (!disc) {
-		return false;
-	}
-
-	return findNextStep(disc);
-};
-
-function showPossibleMoves(element) {
-	const steps = findPossibleMovesToShowIt(element);
-
-	if (!steps) {
-		return false;
-	}
-
-	steps.placesToMove.forEach((step) => {
-		createHint(step);
-	});
-	return steps.placesToMove;
-}
-
-function removePossibleMoves() {
-	const hints = document.querySelectorAll('.hint');
-
-	if (!hints) {
-		return false;
-	}
-
-	hints.forEach((hint) => {
-		hint.parentNode.removeChild(hint);
-	});
-}
-
-const checkIfMoveIsPossible = (e) => {
-	if (!movedDisc) {
-		return true;
-	}
-
-	const colorPrevious = e.target.classList.value.split('--')[1];
-	const colorCurrent = movedDisc.color;
-
-	if (isDiscMoved === null) {
-		if (colorCurrent !== colorPrevious) {
-			console.error('dwa ruchy jednego koloru po kliknięciu na przeciwny');
-			return false;
-		}
-	}
-
-	if (isDiscMoved && isCapturedEnemy) {
-		if (colorCurrent !== colorPrevious) {
-			console.error('ruch przeciwnika po zbiciu');
-			return false;
-		}
-	}
-
-	if (isDiscMoved && !isCapturedEnemy) {
-		if (colorCurrent === colorPrevious) {
-			console.error('dwa ruchy jednego koloru!');
-			return false;
-		}
-	}
-	return true;
-};
 
 function chooseDiscToMove(e) {
 	removePossibleMoves();
@@ -121,63 +56,16 @@ function chooseDiscToMove(e) {
 	isDiscMoved = null;
 }
 
-function isEnemy(enemyElement) {
-	if (!enemyElement) {
-		return false;
-	}
-	return enemyElement.firstElementChild.classList.contains(
-		'disc--' + movedDisc.enemyColor
-	);
-}
-
-function isTwoRowDifference(startRow) {
-	if (!startRow) {
-		return false;
-	}
-
-	const stopRow = movedDisc.getRowNumber();
-	const rowDifference = 2;
-
-	return (
-		parseInt(startRow) === parseInt(stopRow) + rowDifference ||
-		parseInt(startRow) === parseInt(stopRow) - rowDifference
-	);
-}
-
-const isEnemyInTopOrBottomDirection = (enemy, startRow) => {
-	if (!enemy || !startRow) {
-		return false;
-	}
-	const direction = 1;
-
-	return enemy === startRow + direction || enemy === startRow - direction;
-};
-
-const isEnemyInLeftDirection = (enemy, stopColumn) => {
-	if (!enemy || !stopColumn) {
-		return false;
-	}
-	const leftDirection = 1;
-	return enemy === stopColumn - leftDirection;
-};
-
-const isEnemyInRightDirection = (enemy, stopColumn) => {
-	if (!enemy || !stopColumn) {
-		return false;
-	}
-	const rightDirection = 1;
-	return enemy === stopColumn + rightDirection;
-};
-
 function captureEnemyDisc(start, enemyDisc) {
 	if (!start) {
 		return false;
 	}
 
 	const startRow = start.parentElement.firstElementChild.textContent;
+	const stopRow = movedDisc.getRowNumber();
 	const stopColumn = movedDisc.getColNumber();
 
-	if (isTwoRowDifference(startRow)) {
+	if (isTwoRowDifference(parseInt(startRow), parseInt(stopRow))) {
 		let enemyElement = null;
 		let i = 0;
 
@@ -193,7 +81,7 @@ function captureEnemyDisc(start, enemyDisc) {
 			}
 			i = i + 3;
 		}
-		if (isEnemy(enemyElement)) {
+		if (isEnemy(enemyElement, movedDisc)) {
 			enemyElement.removeChild(enemyElement.firstElementChild);
 			return true;
 		}
@@ -235,50 +123,36 @@ function moveDisc(e) {
 	}
 }
 
-const findDiscWhichMoveIsPossible = (gamer) => {
-	const gamerDiscs = document.querySelectorAll('.disc--' + gamer);
-
-	if (!gamerDiscs.length) {
-		return false;
+/* */
+const checkIfMoveIsPossible = (e) => {
+	if (!movedDisc) {
+		return true;
 	}
 
-	let possibleMoves = [];
-	let amountOfMoves = [];
+	const colorPrevious = e.target.classList.value.split('--')[1];
+	const colorCurrent = movedDisc.color;
 
-	gamerDiscs.forEach((gamerDisc) => {
-		possibleMoves = findPossibleMovesToShowIt(gamerDisc).placesToMove.length;
-
-		if (possibleMoves > 0) {
-			amountOfMoves.push(possibleMoves);
+	if (isDiscMoved === null) {
+		if (colorCurrent !== colorPrevious) {
+			console.error('dwa ruchy jednego koloru po kliknięciu na przeciwny');
+			return false;
 		}
-	});
+	}
 
-	if (!amountOfMoves.length) {
-		return false;
+	if (isDiscMoved && isCapturedEnemy) {
+		if (colorCurrent !== colorPrevious) {
+			console.error('ruch przeciwnika po zbiciu');
+			return false;
+		}
+	}
+
+	if (isDiscMoved && !isCapturedEnemy) {
+		if (colorCurrent === colorPrevious) {
+			console.error('dwa ruchy jednego koloru!');
+			return false;
+		}
 	}
 	return true;
-};
-
-/* */
-function getIndexes(index, rowNumber, colId) {
-	if (!index || !rowNumber || !colId) {
-		return [];
-	}
-
-	if (!index[rowNumber]) {
-		return [];
-	}
-
-	return [index[rowNumber][0], index[rowNumber][colId]];
-}
-
-const getIndexesOfFirstStep = (disc, square) => {
-	const steps = disc.getFirstSteps();
-
-	const indexes = steps[0].indexOf(square);
-	const rowNumber = steps[1][indexes][0];
-	const colNumber = disc.getColId(rowNumber, steps[1][indexes][1]);
-	return { row: rowNumber, columnId: colNumber };
 };
 
 function findStepsToCaptureEnemyDisc(square, disc) {
@@ -318,18 +192,6 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 		return { element: element, enemyDisc: enemyDisc };
 	}
 }
-
-const getTableWithoudUndefindElement = (table) => {
-	if (!table) {
-		return false;
-	}
-	const elements = table.filter((element) => {
-		if (element !== 'undefined' || element !== '') {
-			return element;
-		}
-	});
-	return elements;
-};
 
 function findNextStep(disc) {
 	let placesToMove = [];
@@ -381,3 +243,5 @@ discs.forEach((disc) => {
 darkSquares.forEach((square) => {
 	square.addEventListener('click', moveDisc);
 });
+
+export { createObjectDisc, findNextStep };
