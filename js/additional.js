@@ -69,25 +69,16 @@ const findDiscWhichMoveIsPossible = (gamer) => {
 		return false;
 	}
 
-	let possibleMoves = [];
-	let amountOfMoves = [];
-
-	gamerDiscs.forEach((gamerDisc) => {
-		possibleMoves = findPossibleMovesToShowIt(gamerDisc).placesToMove.length;
-
-		if (possibleMoves > 0) {
-			amountOfMoves.push(possibleMoves);
+	for (let i = 0; i <= gamerDiscs.length; i++) {
+		if (findPossibleMovesToShowIt(gamerDiscs[i]).placesToMove.length > 0) {
+			return true;
 		}
-	});
-
-	if (!amountOfMoves.length) {
-		return false;
 	}
-	return true;
 };
 
 const findPossibleMovesToShowIt = (element) => {
 	const disc = createObjectDisc(element);
+	console.log(disc);
 
 	if (!disc) {
 		return false;
