@@ -26,6 +26,7 @@ let movedDisc;
 let startSquare;
 let isCapturedEnemy;
 let isDiscMoved;
+let isEnemyToCapture;
 
 const discs = document.querySelectorAll('.disc');
 const darkSquares = document.querySelectorAll('.board__square--dark');
@@ -51,7 +52,12 @@ function chooseDiscToMove(e) {
 
 	movedDisc = createObjectDisc(e.target);
 	startSquare = e.target;
-	showPossibleMoves(e.target);
+	const possibleSteps = showPossibleMoves(e.target, isEnemyToCapture);
+
+	/* if (isEnemyToCapture) {
+		console.log('Musisz zbić pionek przeciwnika');
+		console.log(movedDisc);
+	} */
 	isCapturedEnemy = null;
 	isDiscMoved = null;
 }
@@ -117,7 +123,12 @@ function moveDisc(e) {
 			? showPlayer(movedDisc.color)
 			: showPlayer(movedDisc.enemyColor);
 
-		if (!findDiscWhichMoveIsPossible(movedDisc.enemyColor)) {
+		const movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
+
+		isEnemyToCapture =
+			movedIsPossible.enemies.length > 0 ? movedIsPossible.enemies : false;
+		console.log(isEnemyToCapture);
+		if (!movedIsPossible.moves) {
 			setGameOverInformation(movedDisc.color);
 		}
 	}
@@ -152,6 +163,7 @@ const checkIfMoveIsPossible = (e) => {
 			return false;
 		}
 	}
+
 	return true;
 };
 
@@ -195,6 +207,7 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 
 function findNextStep(disc) {
 	let placesToMove = [];
+	let placesWithEnemy = [];
 	let enemyDisc = [];
 
 	const stepsElements = getTableWithoudUndefindElement(disc.getFirstSteps()[0]);
@@ -204,6 +217,7 @@ function findNextStep(disc) {
 			const steps = findStepsToCaptureEnemyDisc(square, disc);
 			if (steps) {
 				placesToMove.push(steps.element);
+				placesWithEnemy.push(steps.element);
 				enemyDisc.push(steps.enemyDisc);
 
 				return steps.element;
@@ -232,7 +246,11 @@ function findNextStep(disc) {
 		enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
 	}
 
-	return { placesToMove: placesToMove, enemyDisc: enemyDisc };
+	return {
+		placesToMove: placesToMove,
+		enemyDisc: enemyDisc,
+		placesWithEnemy: placesWithEnemy,
+	};
 }
 
 /* */

@@ -69,25 +69,48 @@ const findDiscWhichMoveIsPossible = (gamer) => {
 		return false;
 	}
 
-	for (let i = 0; i <= gamerDiscs.length; i++) {
-		if (findPossibleMovesToShowIt(gamerDiscs[i]).placesToMove.length > 0) {
-			return true;
+	let moves = false;
+	let enemies = [];
+
+	gamerDiscs.forEach((disc) => {
+		const possibleMoves = findPossibleMovesToShowIt(disc);
+		//console.log(possibleMoves);
+		if (possibleMoves) {
+			if (possibleMoves.placesToMove.length > 0) {
+				moves = true;
+
+				if (possibleMoves.placesWithEnemy.length > 0) {
+					enemies.push(possibleMoves.placesWithEnemy);
+				}
+			}
 		}
-	}
+	});
+
+	/* for (let i = 0; i <= gamerDiscs.length; i++) {
+		const possibleMoves = findPossibleMovesToShowIt(gamerDiscs[i]);
+		if (possibleMoves.placesToMove && possibleMoves.placesToMove.length > 0) {
+			moves = true;
+			if (possibleMoves.enemyDisc) {
+				console.log(possibleMoves.enemyDisc);
+				enemies.push(possibleMoves.enemyDisc);
+			}
+			//return true;
+		}
+	} */
+	return { moves: moves, enemies: enemies };
 };
 
 const findPossibleMovesToShowIt = (element) => {
 	const disc = createObjectDisc(element);
-	console.log(disc);
 
 	if (!disc) {
-		return false;
+		return [];
 	}
 
 	return findNextStep(disc);
 };
 
-function showPossibleMoves(element) {
+function showPossibleMoves(element, isEnemyToCapture) {
 	const steps = findPossibleMovesToShowIt(element);
 
 	if (!steps) {
@@ -95,8 +118,18 @@ function showPossibleMoves(element) {
 	}
 
 	steps.placesToMove.forEach((step) => {
-		createHint(step);
+		if (isEnemyToCapture) {
+			for (let i = 0; i < isEnemyToCapture.length; i++) {
+				console.log(isEnemyToCapture[i], step, isEnemyToCapture[i] == step);
+				if (isEnemyToCapture[i] == step) {
+					createHint(step);
+				}
+			}
+		} else {
+			createHint(step);
+		}
 	});
+
 	return steps.placesToMove;
 }
 
