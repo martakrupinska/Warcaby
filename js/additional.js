@@ -120,8 +120,7 @@ function showPossibleMoves(element, isEnemyToCapture) {
 	steps.placesToMove.forEach((step) => {
 		if (isEnemyToCapture) {
 			for (let i = 0; i < isEnemyToCapture.length; i++) {
-				console.log(isEnemyToCapture[i], step, isEnemyToCapture[i] == step);
-				if (isEnemyToCapture[i] == step) {
+				if (isEnemyToCapture[i][0] == step) {
 					createHint(step);
 				}
 			}

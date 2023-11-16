@@ -123,11 +123,16 @@ function moveDisc(e) {
 			? showPlayer(movedDisc.color)
 			: showPlayer(movedDisc.enemyColor);
 
-		const movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
+		let movedIsPossible;
+		if (isCapturedEnemy) {
+			movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.color);
 
+		} else {
+			movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
+		}
 		isEnemyToCapture =
 			movedIsPossible.enemies.length > 0 ? movedIsPossible.enemies : false;
-		console.log(isEnemyToCapture);
+
 		if (!movedIsPossible.moves) {
 			setGameOverInformation(movedDisc.color);
 		}
