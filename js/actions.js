@@ -24,9 +24,9 @@ import {
 
 let movedDisc;
 let startSquare;
-let isCapturedEnemy;
+let capturedEnemyDisc;
 let isDiscMoved;
-let isEnemyToCapture;
+let foundEnemyToCapture;
 
 const discs = document.querySelectorAll('.disc');
 const darkSquares = document.querySelectorAll('.board__square--dark');
@@ -52,17 +52,13 @@ function chooseDiscToMove(e) {
 
 	movedDisc = createObjectDisc(e.target);
 	startSquare = e.target;
-	const possibleSteps = showPossibleMoves(e.target, isEnemyToCapture);
+	showPossibleMoves(e.target, foundEnemyToCapture);
 
-	/* if (isEnemyToCapture) {
-		console.log('Musisz zbić pionek przeciwnika');
-		console.log(movedDisc);
-	} */
-	isCapturedEnemy = null;
+	capturedEnemyDisc = null;
 	isDiscMoved = null;
 }
 
-function captureEnemyDisc(start, enemyDisc) {
+function captureEnemyDisc(start, enemy) {
 	if (!start) {
 		return false;
 	}
@@ -71,29 +67,42 @@ function captureEnemyDisc(start, enemyDisc) {
 	const stopRow = movedDisc.getRowNumber();
 	const stopColumn = movedDisc.getColNumber();
 
-	if (isTwoRowDifference(parseInt(startRow), parseInt(stopRow))) {
-		let enemyElement = null;
-		let i = 0;
-
-		while (i < enemyDisc.length) {
-			if (isEnemyInTopOrBottomDirection(enemyDisc[i + 1], parseInt(startRow))) {
-				if (isEnemyInLeftDirection(enemyDisc[i + 2], parseInt(stopColumn))) {
-					enemyElement = enemyDisc[i];
-				} else if (
-					isEnemyInRightDirection(enemyDisc[i + 2], parseInt(stopColumn))
-				) {
-					enemyElement = enemyDisc[i];
-				}
-			}
-			i = i + 3;
-		}
-		if (isEnemy(enemyElement, movedDisc)) {
-			enemyElement.removeChild(enemyElement.firstElementChild);
-			return true;
-		}
+	if (!isTwoRowDifference(parseInt(startRow), parseInt(stopRow))) {
+		return false;
 	}
+
+	let enemyElement = null;
+	enemyElement = findEnemyElement(parseInt(startRow),parseInt(stopColumn),enemy);
+
+	if (isEnemy(enemyElement, movedDisc)) {
+		enemyElement.removeChild(enemyElement.firstElementChild);
+		return true;
+	}
+
 	return false;
 }
+
+const findEnemyElement = (startRow, stopColumn, enemyArray) => {
+	let i = 0;
+
+	while (i < enemyArray.length) {
+		let row = enemyArray[i + 1];
+		let column = enemyArray[i + 2];
+		let element = enemyArray[i];
+	
+		if (!isEnemyInTopOrBottomDirection(row, startRow)) {
+			return;
+		}
+
+		if (isEnemyInLeftDirection(column, stopColumn)) {
+			return element;
+		} else if (isEnemyInRightDirection(column, stopColumn)) {
+			return element;
+		}
+
+		i = i + 3;
+	}
+};
 
 function moveDisc(e) {
 	if (e.target.classList.contains('disc')) {
@@ -105,8 +114,8 @@ function moveDisc(e) {
 	}
 	removePossibleMoves();
 
-	const start = startSquare.parentElement;
 	const indexes = findNextStep(movedDisc);
+	const start = startSquare.parentElement;
 
 	if (!indexes.placesToMove) {
 		return false;
@@ -117,27 +126,23 @@ function moveDisc(e) {
 		target.appendChild(movedDisc.HTMLelement);
 
 		isDiscMoved = true;
-		isCapturedEnemy = captureEnemyDisc(start, indexes.enemyDisc);
-
-		isCapturedEnemy
-			? showPlayer(movedDisc.color)
-			: showPlayer(movedDisc.enemyColor);
-
-		let movedIsPossible;
-		if (isCapturedEnemy) {
-			movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.color);
-
-		} else {
-			movedIsPossible = findDiscWhichMoveIsPossible(movedDisc.enemyColor);
-		}
-		isEnemyToCapture =
-			movedIsPossible.enemies.length > 0 ? movedIsPossible.enemies : false;
-
-		if (!movedIsPossible.moves) {
-			setGameOverInformation(movedDisc.color);
-		}
+		additionalActionAfterCapturedEnemyDisc(start, indexes.enemyDisc);
 	}
 }
+const additionalActionAfterCapturedEnemyDisc = (start, enemyDisc) => {
+	capturedEnemyDisc = captureEnemyDisc(start, enemyDisc);
+	const color = capturedEnemyDisc ? movedDisc.color : movedDisc.enemyColor;
+
+	showPlayer(color);
+	const movedIsPossible = findDiscWhichMoveIsPossible(color);
+
+	foundEnemyToCapture =
+		movedIsPossible.enemies.length > 0 ? movedIsPossible.enemies : false;
+
+	if (!movedIsPossible.moves) {
+		setGameOverInformation(movedDisc.color);
+	}
+};
 
 /* */
 const checkIfMoveIsPossible = (e) => {
@@ -155,14 +160,14 @@ const checkIfMoveIsPossible = (e) => {
 		}
 	}
 
-	if (isDiscMoved && isCapturedEnemy) {
+	if (isDiscMoved && capturedEnemyDisc) {
 		if (colorCurrent !== colorPrevious) {
 			console.error('ruch przeciwnika po zbiciu');
 			return false;
 		}
 	}
 
-	if (isDiscMoved && !isCapturedEnemy) {
+	if (isDiscMoved && !capturedEnemyDisc) {
 		if (colorCurrent === colorPrevious) {
 			console.error('dwa ruchy jednego koloru!');
 			return false;
@@ -237,24 +242,29 @@ function findNextStep(disc) {
 	const stepsWithoutCaptureDisc = getTableWithoudUndefindElement(
 		nextStepToCaptureDiscs
 	);
-
-	if (!stepsWithoutCaptureDisc.length) {
-		forwardStep.forEach((step) => {
-			if (isSquareEmpty(step)) {
-				placesToMove.push(step);
-			}
-		});
-	}
-
 	/* do poprawy w innym miejscu..*/
 	if (enemyDisc.length > 0) {
 		enemyDisc = [enemyDisc[0][0], ...enemyDisc[0][1]];
 	}
 
+	if (stepsWithoutCaptureDisc.length > 0) {
+		return {
+			placesToMove: placesToMove,
+			enemyDisc: enemyDisc,
+			placesWithEnemy: placesWithEnemy,
+		};
+	}
+
+	forwardStep.forEach((step) => {
+		if (isSquareEmpty(step)) {
+			placesToMove.push(step);
+		}
+	});
+
 	return {
 		placesToMove: placesToMove,
-		enemyDisc: enemyDisc,
-		placesWithEnemy: placesWithEnemy,
+		enemyDisc: [],
+		placesWithEnemy: [],
 	};
 }
 

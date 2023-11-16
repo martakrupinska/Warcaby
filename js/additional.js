@@ -37,29 +37,29 @@ function isTwoRowDifference(startRow, stopRow) {
 	);
 }
 
-const isEnemyInTopOrBottomDirection = (enemy, startRow) => {
-	if (!enemy || !startRow) {
+const isEnemyInTopOrBottomDirection = (row, startRow) => {
+	if (!row || !startRow) {
 		return false;
 	}
 	const direction = 1;
 
-	return enemy === startRow + direction || enemy === startRow - direction;
+	return row === startRow + direction || row === startRow - direction;
 };
 
-const isEnemyInLeftDirection = (enemy, stopColumn) => {
-	if (!enemy || !stopColumn) {
+const isEnemyInLeftDirection = (column, stopColumn) => {
+	if (!column || !stopColumn) {
 		return false;
 	}
 	const leftDirection = 1;
-	return enemy === stopColumn - leftDirection;
+	return column === stopColumn - leftDirection;
 };
 
-const isEnemyInRightDirection = (enemy, stopColumn) => {
-	if (!enemy || !stopColumn) {
+const isEnemyInRightDirection = (column, stopColumn) => {
+	if (!column || !stopColumn) {
 		return false;
 	}
 	const rightDirection = 1;
-	return enemy === stopColumn + rightDirection;
+	return column === stopColumn + rightDirection;
 };
 
 const findDiscWhichMoveIsPossible = (gamer) => {
@@ -74,29 +74,19 @@ const findDiscWhichMoveIsPossible = (gamer) => {
 
 	gamerDiscs.forEach((disc) => {
 		const possibleMoves = findPossibleMovesToShowIt(disc);
-		//console.log(possibleMoves);
-		if (possibleMoves) {
-			if (possibleMoves.placesToMove.length > 0) {
-				moves = true;
 
-				if (possibleMoves.placesWithEnemy.length > 0) {
-					enemies.push(possibleMoves.placesWithEnemy);
-				}
-			}
+		if (!possibleMoves) {
+			return;
+		}
+
+		if (!possibleMoves.placesToMove.length) {
+			return;
+		}
+		moves = true;
+		if (possibleMoves.placesWithEnemy.length > 0) {
+			enemies.push(possibleMoves.placesWithEnemy);
 		}
 	});
-
-	/* for (let i = 0; i <= gamerDiscs.length; i++) {
-		const possibleMoves = findPossibleMovesToShowIt(gamerDiscs[i]);
-		if (possibleMoves.placesToMove && possibleMoves.placesToMove.length > 0) {
-			moves = true;
-			if (possibleMoves.enemyDisc) {
-				console.log(possibleMoves.enemyDisc);
-				enemies.push(possibleMoves.enemyDisc);
-			}
-			//return true;
-		}
-	} */
 	return { moves: moves, enemies: enemies };
 };
 
@@ -118,17 +108,17 @@ function showPossibleMoves(element, isEnemyToCapture) {
 	}
 
 	steps.placesToMove.forEach((step) => {
-		if (isEnemyToCapture) {
-			for (let i = 0; i < isEnemyToCapture.length; i++) {
-				if (isEnemyToCapture[i][0] == step) {
-					createHint(step);
-				}
-			}
-		} else {
+		if (!isEnemyToCapture) {
 			createHint(step);
+			return;
+		}
+
+		for (let i = 0; i < isEnemyToCapture.length; i++) {
+			if (isEnemyToCapture[i][0] == step) {
+				createHint(step);
+			}
 		}
 	});
-
 	return steps.placesToMove;
 }
 
