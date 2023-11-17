@@ -162,8 +162,8 @@ const getIndexesOfFirstStep = (disc, square) => {
 	const steps = disc.getFirstSteps();
 
 	const indexes = steps[0].indexOf(square);
-	const rowNumber = steps[1][indexes][0];
-	const colNumber = disc.getColId(rowNumber, steps[1][indexes][1]);
+		const rowNumber = steps[1][indexes][0];
+		const colNumber = disc.getColId(rowNumber, steps[1][indexes][1]);
 	return { row: rowNumber, columnId: colNumber };
 };
 

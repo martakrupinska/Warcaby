@@ -72,7 +72,11 @@ function captureEnemyDisc(start, enemy) {
 	}
 
 	let enemyElement = null;
-	enemyElement = findEnemyElement(parseInt(startRow),parseInt(stopColumn),enemy);
+	enemyElement = findEnemyElement(
+		parseInt(startRow),
+		parseInt(stopColumn),
+		enemy
+	);
 
 	if (isEnemy(enemyElement, movedDisc)) {
 		enemyElement.removeChild(enemyElement.firstElementChild);
@@ -89,7 +93,7 @@ const findEnemyElement = (startRow, stopColumn, enemyArray) => {
 		let row = enemyArray[i + 1];
 		let column = enemyArray[i + 2];
 		let element = enemyArray[i];
-	
+
 		if (!isEnemyInTopOrBottomDirection(row, startRow)) {
 			return;
 		}
@@ -180,7 +184,7 @@ const checkIfMoveIsPossible = (e) => {
 function findStepsToCaptureEnemyDisc(square, disc) {
 	let enemyDisc = [];
 	const indexes = getIndexesOfFirstStep(disc, square);
-	const indexOfPossibleSteps = disc.getIndexesOfPossibleSteps();
+		const indexOfPossibleSteps = disc.getIndexesOfPossibleSteps();
 
 	const rowAndColNumberAdd = getIndexes(
 		indexOfPossibleSteps,
@@ -192,7 +196,7 @@ function findStepsToCaptureEnemyDisc(square, disc) {
 		indexes.row - 1,
 		indexes.columnId
 	);
-
+	
 	let element;
 
 	if (

@@ -23,10 +23,10 @@ class Discs {
 	}
 
 	getColumnToMoveIsPossible() {
-		const col_left = [];
+				const col_left = [];
 		const col_right = [];
 		const colNumber = this.getColNumber();
-
+		
 		let j = 1;
 		while (j <= boardPieces) {
 			if (j < colNumber) {
@@ -47,7 +47,7 @@ class Discs {
 					col_left.unshift(colNumber - row[f]);
 				} else {
 					col_left.unshift(undefined);
-				}
+									}
 
 				if (colNumber + row[f] <= 8) {
 					col_right.unshift(colNumber + row[f]);
@@ -59,10 +59,13 @@ class Discs {
 		return [col_left, col_right];
 	}
 
-	getIndexesOfPossibleSteps() {
+	getIndexesOfPossibleSteps(column) {
+		if (!column) {
+			column = this.getColumnToMoveIsPossible();
+		}
+
 		let indexes = [];
 
-		const column = this.getColumnToMoveIsPossible();
 		const col_left = column[0];
 		const col_right = column[1];
 
@@ -70,17 +73,10 @@ class Discs {
 			indexes[g] = [row[g - 1], col_left[g - 1], col_right[g - 1]];
 		}
 
-		/* indexes.forEach((index) => {
-			if (index.includes(0)) {
-				index.splice(index.indexOf(index.includes(0)), 1, undefined);
-			}
-		});
- */
 		return indexes;
 	}
 
-	getQuantityOfColumnFromIndexesTable() {
-		const column = this.getColumnToMoveIsPossible();
+	getQuantityOfColumnFromIndexesTable(column) {
 		if (column.length) {
 			return parseInt(column.length);
 		}
@@ -103,8 +99,9 @@ class Discs {
 	}
 
 	getFirstSteps() {
-		const index = this.getIndexesOfPossibleSteps();
-		const columnNumber = this.getQuantityOfColumnFromIndexesTable();
+		const column = this.getColumnToMoveIsPossible();
+		const index = this.getIndexesOfPossibleSteps(column);
+		const columnNumber = this.getQuantityOfColumnFromIndexesTable(column);
 		const rowNumber = this.getForwardAndStepBackRowNumberToStep();
 		let firstStep = [];
 		let indexOfFirsSteps = [];
