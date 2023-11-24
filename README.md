@@ -5,6 +5,8 @@ The project is a classic version of the checkers game.
 ## General information
 This project was implemented to practice JavaScript and consolidation of knowledge from completed courses.
 
+GitHub pages: https://martakrupinska.github.io/Warcaby/
+
 ### Completed tasks
  - possibility to set players names
  - information about the player who should make a move
