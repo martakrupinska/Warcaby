@@ -4,7 +4,7 @@ import {
 	setGameOverInformation,
 } from './script.js';
 
-import { White, Black } from './object.js';
+import { White, Black } from './discs.js';
 
 import {
 	isSquareEmpty,
