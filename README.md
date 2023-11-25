@@ -10,6 +10,7 @@ GitHub pages: https://martakrupinska.github.io/Warcaby/
 ### Completed tasks
  - possibility to set up players names
  - information about the player who should make a move
+ - hints of movement show up after disc is chosen
  - discs can only move going forward but if a player can make a capture, he/she has to make the capture
  - player can make next move after every captured
  - information about the end of the game when player has no disc or no moves available.
